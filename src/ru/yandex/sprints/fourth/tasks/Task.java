@@ -1,3 +1,5 @@
+package ru.yandex.sprints.fourth.tasks;
+
 import java.util.Objects;
 
 public class Task {
@@ -19,6 +21,14 @@ public class Task {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public Status getStatus() {
@@ -62,12 +72,19 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Задача (" +
-                "Название: " + title +
-                "; описание: " + description +
-                "; id: " + id +
-                "; статус:" + status +
-                "; хэш-код объекта: " + hashCode() +
-                ')';
+        return new StringBuilder("Задача (Название: ").append(title)
+                .append("; Описание: ").append(description)
+                .append("; id: ").append(id)
+                .append("; Статус: ").append(status)
+                .append("; Хэш-код: ").append(hashCode())
+                .append(")").append("\n").toString();
     }
+                //"Задача (" +
+                //"Название: " + title +
+                //"; описание: " + description +
+                //"; id: " + id +
+                //"; статус:" + status +
+                //"; хэш-код объекта: " + hashCode() +
+                //')' +
+                //"\n";
 }

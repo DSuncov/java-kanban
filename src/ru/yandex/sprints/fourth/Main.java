@@ -1,3 +1,11 @@
+package ru.yandex.sprints.fourth;
+
+import ru.yandex.sprints.fourth.manager.TaskManager;
+import ru.yandex.sprints.fourth.tasks.Epic;
+import ru.yandex.sprints.fourth.tasks.Status;
+import ru.yandex.sprints.fourth.tasks.Subtask;
+import ru.yandex.sprints.fourth.tasks.Task;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -36,59 +44,43 @@ public class Main {
         taskManager.createSubtask(epic2, subtask5);
         taskManager.createSubtask(epic2, subtask6);
 
-        taskManager.printAllTask();
-        System.out.println("-".repeat(100));
-        taskManager.printAllEpic();
-        System.out.println("-".repeat(100));
-        taskManager.printAllSubtask();
-        System.out.println("-".repeat(100));
-        taskManager.printSubtaskByEpic(epic2); // должна вывести все подзадачи с второго эпика
-        System.out.println("-".repeat(100));
+        System.out.println(epic1.getSubtasksid()); // Выводим id подзадач из эпика 1 (должно быть 1, 2, 3)
+        System.out.println(subtask6.getEpicid()); // Выводим id эпика, в которой хранится подзадача (должно быть 6)
+
+        //Чтобы убрать скобки и запятые при выводе через sout пришлось делать такой костыль
+        System.out.println(taskManager.getAllTask().toString()
+                .replace(", ", "")
+                .replace("[", "")
+                .replace("]", "") + "-".repeat(100));
+        System.out.println(taskManager.getAllEpic().toString()
+                .replace(", ", "")
+                .replace("[", "")
+                .replace("]", "") + "-".repeat(100));
+        System.out.println(taskManager.getSubtaskByEpic(epic2).toString()
+                .replace(", ", "")
+                .replace("[", "")
+                .replace("]", "") + "-".repeat(100));
 
         //Получение задач по id
-        System.out.println(taskManager.getTask(1));
-        System.out.println(taskManager.getEpic(2)); //должно вывести null
-        System.out.println(taskManager.getSubtask(epic2, 1));
+        System.out.print(taskManager.getTask(1).toString().replace("[", "").replace("]", ""));
+        System.out.print(taskManager.getEpic(5).toString().replace("[", "").replace("]", ""));
+        System.out.print(taskManager.getSubtask(epic2, 1).toString().replace("[", "").replace("]", ""));
         System.out.println("-".repeat(100));
 
         //Удаление задачи по id
-        System.out.println(taskManager.getTask(2)); // hashCode ...
         taskManager.removeTask(2);
-        System.out.println(taskManager.getTask(2)); // Должно вывести null
-
-        System.out.println(taskManager.getEpic(5)); // Java Collection Framework ...
-        taskManager.removeEpic(4);
-        System.out.println(taskManager.getEpic(5)); // Должно вывести null
-
-        System.out.println(taskManager.getSubtask(epic2, 1)); // Set ..
+        taskManager.removeEpic(5);
         taskManager.removeSubtask(epic2, 1);
-        System.out.println(taskManager.getSubtask(epic2, 1)); // Должно вывести Map ...
         System.out.println("-".repeat(100));
 
         //Обновляем задачи
-        System.out.println(taskManager.getTaskStatus(task1)); // Должно вывести "NEW"
         taskManager.updateTask(task1, new Task("Тема изучена", "метод проверяет равенство объектов", Status.DONE));
-        System.out.println(taskManager.getTaskStatus(task1) + "\n"); // Должно вывести "DONE"
-
-        System.out.println(taskManager.getEpicStatus(epic2)); // Должно вывести "NEW"
+        taskManager.updateEpic(epic1, new Epic("Тема изучена", "Коллекции рассмотрены", Status.DONE));
         taskManager.updateEpic(epic2, new Epic("Тема изучена", "Принципы рассмотрены", Status.DONE));
-        System.out.println(taskManager.getEpicStatus(epic2) + "\n"); // Должно вывести "NEW", так как статус зависит от подзадач
-
-        System.out.println(taskManager.getSubtaskStatus(subtask5)); // Должно вывести "NEW"
+        //Тут я так и не смог понять, почему после обновления epic2 при проверке наличия ключа в updateSubtask возвращается false
         taskManager.updateSubtask(epic2, subtask5, new Subtask("Полиморфизм", "Как работает полиморфизм в Java", Status.IN_PROGRESS));
-        System.out.println(taskManager.getSubtaskStatus(subtask5) + "\n"); // Должно вывести "IN_PROGRESS"
-
-        System.out.println(taskManager.getSubtaskStatus(subtask4)); // Должно вывести "NEW"
         taskManager.updateSubtask(epic2, subtask4, new Subtask("Наследование", "Как работает наследование в Java", Status.NEW));
-        System.out.println(taskManager.getSubtaskStatus(subtask4) + "\n"); // Должно вывести "NEW"
-
-        System.out.println(taskManager.getSubtaskStatus(subtask6)); // Должно вывести "NEW"
-        taskManager.updateSubtask(epic2, subtask6, new Subtask("Инкапсуляция", "Как работает инкапсуляция в Java", Status.NEW));
-        System.out.println(taskManager.getSubtaskStatus(subtask6) + "\n"); // Должно вывести "NEW"
-
-        System.out.println(taskManager.getEpicStatus(epic2)); // Должно вывести "NEW"
-        taskManager.updateEpic(epic2, new Epic("Тема изучена", "Принципы рассмотрены", Status.NEW));
-        System.out.println(taskManager.getEpicStatus(epic2)); // Должно вывести "IN_PROGRESS"
+        taskManager.updateSubtask(epic2, subtask6, new Subtask("Инкапсуляция", "Как работает инкапсуляция в Java", Status.DONE));
         System.out.println("-".repeat(100));
 
         //Удаление всех задач
