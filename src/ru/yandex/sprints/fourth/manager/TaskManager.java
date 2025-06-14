@@ -148,56 +148,82 @@ public class TaskManager {
     }
 
     //Обновление задачи
-    public void updateTask(Task task, Task newTask) {
-        if (commonTasks.containsValue(task)) {
-            task.setTitle(newTask.getTitle());
-            task.setDescription(newTask.getDescription());
-            task.setStatus(newTask.getStatus());
-            System.out.println("Задача обновлена");
-        } else {
-            System.out.println("Задача отсутствует");
+    public void updateTask(int id, String title, String description, Status status) {
+        if (!commonTasks.containsKey(id)) {
+            System.out.println("Задача с таким id отсутствует");
+            return;
         }
+        Task task = commonTasks.get(id);
+        task.setTitle(title);
+        task.setDescription(description);
+        task.setStatus(status);
+        System.out.println("Задача обновлена");
     }
 
-    public void updateEpic(Epic epic, Epic newEpic) {
-        if (epics.containsValue(epic)) {
-            epic.setTitle(newEpic.getTitle());
-            epic.setDescription(newEpic.getDescription());
-            System.out.println("Эпик обновлен");
-        } else {
-            System.out.println("Эпик отсутствует");
+    public void updateEpic(int id, String title, String description) {
+        if (!epics.containsKey(id)) {
+            System.out.println("Эпик с таким id отсутствует");
+            return;
+        }
+        Epic epic = epics.get(id);
+        epic.setTitle(title);
+        epic.setDescription(description);
+        System.out.println("Эпик обновлен");
+    }
+
+    public void updateSubtask(int epicid, int subtaskid, String title, String description, Status status) {
+        Epic epic = epics.get(epicid);
+        if (epic == null) {
+            System.out.println("Эпик с таким id отсутствует");
             return;
         }
 
-        boolean isAllSubtaskDone = false;
+        if (!subtasks.containsKey(epic)) {
+            System.out.println("Подзадачи у эпика отсутствуют");
+            return;
+        }
 
-        if (subtasks.containsKey(epic)) {
-            for (Epic key : subtasks.keySet()) {
-                for (Subtask value : subtasks.get(key).values()) {
-                    if (value.getStatus() == Status.DONE) {
-                        isAllSubtaskDone = true;
-                    } else if (value.getStatus() == Status.IN_PROGRESS) {
-                        isAllSubtaskDone = false;
-                        epic.setStatus(Status.IN_PROGRESS);
-                        break;
-                    }
-                }
+        Subtask subtask = subtasks.get(epic).get(subtaskid);
+        if (subtask == null) {
+            System.out.println("Подзадача с таким id отсутствует");
+            return;
+        }
+
+        subtask.setTitle(title);
+        subtask.setDescription(description);
+        subtask.setStatus(status);
+        System.out.println("Подзадача обновлена");
+
+        updateEpicStatus(epicid);
+    }
+
+    private void updateEpicStatus(int epicid) {
+        Epic epic = epics.get(epicid);
+        if (epic == null) return;
+        if (!subtasks.containsKey(epic) || subtasks.get(epic).isEmpty()) {
+            epic.setStatus(Status.NEW);
+            return;
+        }
+
+        int newCount = 0;
+        int doneCount = 0;
+        int total = subtasks.get(epic).size();
+
+        for (Subtask subtask : subtasks.get(epic).values()) {
+            if (subtask.getStatus() == Status.NEW) {
+                newCount++;
+            }
+            if (subtask.getStatus() == Status.DONE) {
+                doneCount++;
             }
         }
 
-        if (isAllSubtaskDone) {
+        if (newCount == total) {
+            epic.setStatus(Status.NEW);
+        } else if (doneCount == total) {
             epic.setStatus(Status.DONE);
-        }
-    }
-
-    public void updateSubtask(Epic epic, Subtask subtask, Subtask newSubtask) {
-        if (subtasks.containsKey(epic) && subtasks.get(epic).containsValue(subtask)) {
-            subtask.setTitle(newSubtask.getTitle());
-            subtask.setDescription(newSubtask.getDescription());
-            subtask.setStatus(newSubtask.getStatus());
-            System.out.println("Подзадача обновлена");
         } else {
-            System.out.println("Подзадача отсутствует");
+            epic.setStatus(Status.IN_PROGRESS);
         }
     }
 }

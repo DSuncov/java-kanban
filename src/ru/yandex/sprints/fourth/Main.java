@@ -24,7 +24,7 @@ public class Main {
 
         //Создание и добавление эпиков
         var epic1 = new Epic("Изучить тему Java Collection Framework", "В подзадачах рассмотреть отдельные коллекции", Status.NEW);
-        var epic2 = new Epic("Изучить ООП", "В подзадачах рассмотреть принципы ООП", Status.NEW);
+        var epic2 = new Epic("Изучить ООП", "Рассмотрены часть тем", Status.NEW);
 
         taskManager.createEpic(epic1);
         taskManager.createEpic(epic2);
@@ -74,13 +74,12 @@ public class Main {
         System.out.println("-".repeat(100));
 
         //Обновляем задачи
-        taskManager.updateTask(task1, new Task("Тема изучена", "метод проверяет равенство объектов", Status.DONE));
-        taskManager.updateEpic(epic1, new Epic("Тема изучена", "Коллекции рассмотрены", Status.DONE));
-        taskManager.updateEpic(epic2, new Epic("Тема изучена", "Принципы рассмотрены", Status.DONE));
-        //Тут я так и не смог понять, почему после обновления epic2 при проверке наличия ключа в updateSubtask возвращается false
-        taskManager.updateSubtask(epic2, subtask5, new Subtask("Полиморфизм", "Как работает полиморфизм в Java", Status.IN_PROGRESS));
-        taskManager.updateSubtask(epic2, subtask4, new Subtask("Наследование", "Как работает наследование в Java", Status.NEW));
-        taskManager.updateSubtask(epic2, subtask6, new Subtask("Инкапсуляция", "Как работает инкапсуляция в Java", Status.DONE));
+        taskManager.updateTask(1, "Тема изучена", "метод проверяет равенство объектов", Status.DONE);
+        taskManager.updateEpic(6, "Тема изучена", "Коллекции рассмотрены");
+        //Спасибо за развернутый ответ
+        taskManager.updateSubtask(6, 2, "Полиморфизм", "Как работает полиморфизм в Java", Status.IN_PROGRESS);
+        taskManager.updateSubtask(6, 1, "Наследование", "Как работает наследование в Java", Status.NEW);
+        taskManager.updateSubtask(6, 3, "Инкапсуляция", "Как работает инкапсуляция в Java", Status.DONE);
         System.out.println("-".repeat(100));
 
         //Удаление всех задач
