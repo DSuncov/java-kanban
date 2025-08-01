@@ -1,4 +1,4 @@
-package ru.yandex.sprints.fourth.tasks;
+package tasks;
 
 import java.util.Objects;
 
@@ -6,12 +6,19 @@ public class Task {
 
     private String title;
     private String description;
-    public int id;
+    private int id;
     private Status status;
 
     public Task(String title, String description, Status status) {
         this.title = title;
         this.description = description;
+        this.status = status;
+    }
+
+    public Task(String title, String description, int id, Status status) {
+        this.title = title;
+        this.description = description;
+        this.id = id;
         this.status = status;
     }
 
@@ -27,20 +34,20 @@ public class Task {
         return title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
     public void setTitle(String title) {
         this.title = title;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Status getStatus() {
+        return status;
     }
 
     public void setStatus(Status status) {
@@ -49,14 +56,7 @@ public class Task {
 
     @Override
     public int hashCode() {
-        int result = 17;
-        if (title != null) {
-            result = title.hashCode();
-        }
-        if (description != null) {
-            result += description.hashCode();
-        }
-        return result;
+        return Objects.hash(title, description, id, status);
     }
 
     @Override
@@ -67,7 +67,8 @@ public class Task {
         Task task = (Task) obj;
         return Objects.equals(title, task.title) &&
                 Objects.equals(description, task.description) &&
-                status == task.status;
+                status == task.status &&
+                id == task.id;
     }
 
     @Override
@@ -76,15 +77,6 @@ public class Task {
                 .append("; Описание: ").append(description)
                 .append("; id: ").append(id)
                 .append("; Статус: ").append(status)
-                .append("; Хэш-код: ").append(hashCode())
                 .append(")").append("\n").toString();
     }
-                //"Задача (" +
-                //"Название: " + title +
-                //"; описание: " + description +
-                //"; id: " + id +
-                //"; статус:" + status +
-                //"; хэш-код объекта: " + hashCode() +
-                //')' +
-                //"\n";
 }

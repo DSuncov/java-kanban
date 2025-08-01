@@ -1,15 +1,17 @@
-package ru.yandex.sprints.fourth.manager;
+package manager;
 
-import ru.yandex.sprints.fourth.tasks.Epic;
-import ru.yandex.sprints.fourth.tasks.Status;
-import ru.yandex.sprints.fourth.tasks.Subtask;
-import ru.yandex.sprints.fourth.tasks.Task;
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
 
 import java.util.*;
 
-public class TaskManager {
+public class InMemoryTaskManager implements TaskManager {
     private int idCounter; //id для простых задач и эпиков
     private int subtaskIdCounter; //id для подзадач
+
+    private HistoryManager historyManager = Managers.getDefaultHistory();
 
     private Map<Integer, Task> commonTasks = new HashMap<>(); // для хранения обычных задач
     private Map<Integer, Epic> epics = new HashMap<>(); // для хранения крупных задач
@@ -23,8 +25,28 @@ public class TaskManager {
         return subtaskIdCounter;
     }
 
-    //Печать задач из коллекции
+    @Override
+    public Map<Integer, Task> getTasksList() {
+        return commonTasks;
+    }
 
+    @Override
+    public Map<Integer, Epic> getEpicsList() {
+        return epics;
+    }
+
+    @Override
+    public Map<Epic, HashMap<Integer, Subtask>> getSubtasksList() {
+        return subtasks;
+    }
+
+    @Override
+    public HistoryManager getHistoryManager() {
+        return historyManager;
+    }
+
+    //Печать задач из коллекции
+    @Override
     public List<Task> getAllTask() {
         if (commonTasks.isEmpty()) {
             throw new NullPointerException("Коллекция пуста. Невозможно получить список задач.");
@@ -32,6 +54,7 @@ public class TaskManager {
         return new ArrayList<>(commonTasks.values());
     }
 
+    @Override
     public List<Epic> getAllEpic() {
         if (epics.isEmpty()) {
             throw new NullPointerException("Коллекция пуста. Невозможно получить список эпиков.");
@@ -39,6 +62,7 @@ public class TaskManager {
         return new ArrayList<>(epics.values());
     }
 
+    @Override
     public List<Subtask> getSubtaskByEpic(Epic epic) {
         if (subtasks.isEmpty()) {
             throw new NullPointerException("Коллекция пуста. Невозможно получить список подзадач.");
@@ -47,18 +71,20 @@ public class TaskManager {
     }
 
     //Удаление всех задач из коллекции
-
+    @Override
     public void removeAllTask() {
         commonTasks.clear();
         System.out.println("Коллекция успешно очищена!");
     }
 
+    @Override
     public void removeAllEpic() {
         epics.clear();
         subtasks.clear();
         System.out.println("Коллекция успешно очищена!");
     }
 
+    @Override
     public void removeAllSubtask() {
         subtasks.clear();
         for (Epic epic : epics.values()) {
@@ -68,42 +94,56 @@ public class TaskManager {
     }
 
     //Получение задачи по id
-
+    @Override
     public Task getTask(int id) {
         if (!commonTasks.containsKey(id)) {
             throw new NullPointerException("Обычной задачи с таким id не существует.");
         }
-        return commonTasks.get(id);
+        Task task = commonTasks.get(id);
+        historyManager.add(task);
+        return task;
     }
 
+    @Override
     public Epic getEpic(int id) {
         if (!epics.containsKey(id)) {
             throw new NullPointerException("Эпика с таким id не существует.");
         }
-        return epics.get(id);
+        Epic epic = epics.get(id);
+        historyManager.add(epic);
+        return epic;
     }
 
+    @Override
     public Subtask getSubtask(Epic epic, int id) {
         if (!subtasks.get(epic).containsKey(id)) {
             throw new NullPointerException("Подзадачи с таким id не существует.");
         }
-        return subtasks.get(epic).get(id);
+        Subtask subtask = subtasks.get(epic).get(id);
+        historyManager.add(subtask);
+        return subtask;
     }
 
     //Добавление задачи в коллекцию
-
+    @Override
     public void createTask(Task task) {
-        idCounter++;
-        commonTasks.put(getId(), task);
-        task.setId(idCounter);
+        if (task.getId() > idCounter) {
+            commonTasks.put(task.getId(), task);
+        } else {
+            idCounter++;
+            commonTasks.put(getId(), task);
+            task.setId(idCounter);
+        }
     }
 
+    @Override
     public void createEpic(Epic epic) {
         idCounter++;
         epics.put(getId(), epic);
         epic.setId(idCounter);
     }
 
+    @Override
     public void createSubtask(Epic epic, Subtask subtask) {
         if (subtasks.containsKey(epic)) {
             subtaskIdCounter = subtasks.get(epic).size() + 1; // если в коллекции с данным ключом уже есть элемент, то id получаем как сумму размера коллекции + 1
@@ -118,7 +158,7 @@ public class TaskManager {
     }
 
     //Удаление задачи по id из коллекции
-
+    @Override
     public void removeTask(int id) {
         if (!commonTasks.containsKey(id)) {
             System.out.print("Обычной задачи с таким id не существует!");
@@ -128,6 +168,7 @@ public class TaskManager {
         System.out.println("Задача успешно удалена!");
     }
 
+    @Override
     public void removeEpic(int id) {
         if (!epics.containsKey(id)) {
             System.out.print("Эпика с таким id не существует!");
@@ -138,6 +179,7 @@ public class TaskManager {
         System.out.println("Задача успешно удалена!");
     }
 
+    @Override
     public void removeSubtask(Epic epic, int id) {
         if (!subtasks.containsKey(epic)) {
             System.out.print("Подзадачи с таким id не существует!");
@@ -148,6 +190,7 @@ public class TaskManager {
     }
 
     //Обновление задачи
+    @Override
     public void updateTask(int id, String title, String description, Status status) {
         if (!commonTasks.containsKey(id)) {
             System.out.println("Задача с таким id отсутствует");
@@ -160,6 +203,7 @@ public class TaskManager {
         System.out.println("Задача обновлена");
     }
 
+    @Override
     public void updateEpic(int id, String title, String description) {
         if (!epics.containsKey(id)) {
             System.out.println("Эпик с таким id отсутствует");
@@ -171,6 +215,7 @@ public class TaskManager {
         System.out.println("Эпик обновлен");
     }
 
+    @Override
     public void updateSubtask(int epicid, int subtaskid, String title, String description, Status status) {
         Epic epic = epics.get(epicid);
         if (epic == null) {

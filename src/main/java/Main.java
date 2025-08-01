@@ -1,15 +1,14 @@
-package ru.yandex.sprints.fourth;
-
-import ru.yandex.sprints.fourth.manager.TaskManager;
-import ru.yandex.sprints.fourth.tasks.Epic;
-import ru.yandex.sprints.fourth.tasks.Status;
-import ru.yandex.sprints.fourth.tasks.Subtask;
-import ru.yandex.sprints.fourth.tasks.Task;
+import manager.Managers;
+import manager.TaskManager;
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
 
 public class Main {
     public static void main(String[] args) {
 
-        var taskManager = new TaskManager();
+        var taskManager = Managers.getDefault();
 
         // Создание и добавление простых задач
         var task1 = new Task("Изучить тему equals", "Определить для чего используется. Как его переопределить.", Status.NEW);
@@ -44,27 +43,43 @@ public class Main {
         taskManager.createSubtask(epic2, subtask5);
         taskManager.createSubtask(epic2, subtask6);
 
+        printAllTasks(taskManager);
+
         System.out.println(epic1.getSubtasksid()); // Выводим id подзадач из эпика 1 (должно быть 1, 2, 3)
         System.out.println(subtask6.getEpicid()); // Выводим id эпика, в которой хранится подзадача (должно быть 6)
 
-        //Чтобы убрать скобки и запятые при выводе через sout пришлось делать такой костыль
-        System.out.println(taskManager.getAllTask().toString()
+        System.out.println(taskManager
+                .getAllTask()
+                .toString()
                 .replace(", ", "")
                 .replace("[", "")
                 .replace("]", "") + "-".repeat(100));
-        System.out.println(taskManager.getAllEpic().toString()
+        System.out.println(taskManager
+                .getAllEpic()
+                .toString()
                 .replace(", ", "")
                 .replace("[", "")
                 .replace("]", "") + "-".repeat(100));
-        System.out.println(taskManager.getSubtaskByEpic(epic2).toString()
+        System.out.println(taskManager
+                .getSubtaskByEpic(epic2)
+                .toString()
                 .replace(", ", "")
                 .replace("[", "")
                 .replace("]", "") + "-".repeat(100));
 
         //Получение задач по id
-        System.out.print(taskManager.getTask(1).toString().replace("[", "").replace("]", ""));
-        System.out.print(taskManager.getEpic(5).toString().replace("[", "").replace("]", ""));
-        System.out.print(taskManager.getSubtask(epic2, 1).toString().replace("[", "").replace("]", ""));
+        System.out.print(taskManager
+                .getTask(1)
+                .toString()
+                .replace("[", "").replace("]", ""));
+        System.out.print(taskManager
+                .getEpic(5)
+                .toString()
+                .replace("[", "").replace("]", ""));
+        System.out.print(taskManager
+                .getSubtask(epic2, 1)
+                .toString()
+                .replace("[", "").replace("]", ""));
         System.out.println("-".repeat(100));
 
         //Удаление задачи по id
@@ -87,5 +102,30 @@ public class Main {
         taskManager.removeAllEpic();
         taskManager.removeAllSubtask();
         System.out.println("-".repeat(100));
+    }
+
+    private static void printAllTasks(TaskManager manager) {
+        System.out.println("Задачи:");
+        for (Task task : manager.getAllTask()) {
+            manager.getHistoryManager().add(task);
+            System.out.println(task);
+        }
+        System.out.println("Эпики:");
+        for (Epic epic : manager.getAllEpic()) {
+            manager.getHistoryManager().add(epic);
+            System.out.println(epic);
+
+            System.out.println("Подзадачи:");
+
+            for (Task task : manager.getSubtaskByEpic(epic)) {
+                manager.getHistoryManager().add(task);
+                System.out.println("--> " + task);
+            }
+        }
+
+        System.out.println("История:");
+        for (Task task : manager.getHistoryManager().getHistory()) {
+            System.out.println(task);
+        }
     }
 }

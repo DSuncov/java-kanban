@@ -1,4 +1,4 @@
-package ru.yandex.sprints.fourth.tasks;
+package tasks;
 
 public enum Status {
     NEW,
