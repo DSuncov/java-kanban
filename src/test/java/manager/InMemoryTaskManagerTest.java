@@ -151,7 +151,8 @@ class InMemoryTaskManagerTest {
         //given-when
         returnExpected.setId(id);
         //then
-        assertEquals(returnExpected, taskManager.getSubtask(epic, id));
+        Subtask returnActual = taskManager.getSubtask(epic, id);
+        assertEquals(returnExpected, returnActual);
     }
 
     @DisplayName("Проверяет, что метод добавляет в список задачу с установленным id, а не меняет его через инкрементацию в idCounter")
@@ -178,10 +179,11 @@ class InMemoryTaskManagerTest {
         Status expectedStatus = task.getStatus();
         //when
         taskManager.createTask(task);
+        Task taskExpected = taskManager.getTask(7);
         //then
-        assertEquals(expectedTitle, taskManager.getTask(7).getTitle());
-        assertEquals(expectedDescription, taskManager.getTask(7).getDescription());
-        assertEquals(expectedId, taskManager.getTask(7).getId());
-        assertEquals(expectedStatus, taskManager.getTask(7).getStatus());
+        assertEquals(expectedTitle, taskExpected.getTitle());
+        assertEquals(expectedDescription, taskExpected.getDescription());
+        assertEquals(expectedId,taskExpected.getId());
+        assertEquals(expectedStatus, taskExpected.getStatus());
     }
 }
