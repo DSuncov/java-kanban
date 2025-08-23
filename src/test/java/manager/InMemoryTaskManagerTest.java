@@ -102,7 +102,7 @@ class InMemoryTaskManagerTest {
 
     @DisplayName("Проверяет, что метод getDefault() возвращает проинициализированный объект TaskManager")
     @Test
-    void Managers_GetDefault_shouldReturnInitializedTaskManager_Test() {
+    void managers_GetDefault_shouldReturnInitializedTaskManager_Test() {
         //given-when
         TaskManager taskManager = Managers.getDefault();
         //then
@@ -114,7 +114,7 @@ class InMemoryTaskManagerTest {
 
     @DisplayName("Проверяет, что метод getDefaultHistory() возвращает проинициализированный объект HistoryManager")
     @Test
-    void Managers_GetDefaultHistory_shouldReturnInitializedHistoryManager_Test() {
+    void managers_GetDefaultHistory_shouldReturnInitializedHistoryManager_Test() {
         //given-when
         HistoryManager taskManager = Managers.getDefaultHistory();
         //then
@@ -127,7 +127,7 @@ class InMemoryTaskManagerTest {
     @DisplayName("Проверяет, что метод возвращает по id ожидаемые задачи")
     @ParameterizedTest
     @MethodSource("manager.Stubs#getTaskById")
-    void InMemoryTaskManager_getTask_shouldReturnExpectedTaskById_Test(Task returnExpected, int id) {
+    void inMemoryTaskManager_getTask_shouldReturnExpectedTaskById_Test(Task returnExpected, int id) {
         //given-when
         returnExpected.setId(id);
         //then
@@ -137,7 +137,7 @@ class InMemoryTaskManagerTest {
     @DisplayName("Проверяет, что метод возвращает по id ожидаемые эпики")
     @ParameterizedTest
     @MethodSource("manager.Stubs#getEpicById")
-    void InMemoryTaskManager_getEpic_shouldReturnExpectedEpicById_Test(Epic returnExpected, int id) {
+    void inMemoryTaskManager_getEpic_shouldReturnExpectedEpicById_Test(Epic returnExpected, int id) {
         //given-when
         returnExpected.setId(id);
         //then
@@ -147,7 +147,7 @@ class InMemoryTaskManagerTest {
     @DisplayName("Проверяет, что метод возвращает по id ожидаемые подзадачи")
     @ParameterizedTest
     @MethodSource("manager.Stubs#getSubtaskById")
-    void InMemoryTaskManager_getSubtask_shouldReturnExpectedSubtaskByEpicAndId_Test(Subtask returnExpected, Epic epic, int id) {
+    void inMemoryTaskManager_getSubtask_shouldReturnExpectedSubtaskByEpicAndId_Test(Subtask returnExpected, Epic epic, int id) {
         //given-when
         returnExpected.setId(id);
         //then
@@ -157,7 +157,7 @@ class InMemoryTaskManagerTest {
 
     @DisplayName("Проверяет, что метод добавляет в список задачу с установленным id, а не меняет его через инкрементацию в idCounter")
     @Test
-    void InMemoryTaskManager_getTask_shouldReturnTask_WithSetId_Test() {
+    void inMemoryTaskManager_getTask_shouldReturnTask_WithSetId_Test() {
         //given
         Task task = new Task("Задача № 10", "Описание № 10", 10, DEFAULT_STATUS);
         //when
@@ -170,7 +170,7 @@ class InMemoryTaskManagerTest {
 
     @DisplayName("Проверяет, что созданный объект задачи не изменяет свои поля после добавления в список задач")
     @Test
-    void InMemoryTaskManager_getTask_shouldReturnImmutableTask_AfterAddToList_Test() {
+    void inMemoryTaskManager_getTask_shouldReturnImmutableTask_AfterAddToList_Test() {
         //given
         Task task = new Task("Задача № 7", "Описание № 7", DEFAULT_STATUS);
         String expectedTitle = task.getTitle();
