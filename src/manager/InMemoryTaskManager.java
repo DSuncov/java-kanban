@@ -141,7 +141,7 @@ public class InMemoryTaskManager implements TaskManager {
             task.setId(taskIdCounter);
         } else {
             taskIdCounter = epicIdCounter + 1;
-            if (task.getId() != 0 ) {
+            if (task.getId() != 0) {
                 task.setId(task.getId());
             } else {
                 task.setId(taskIdCounter);
