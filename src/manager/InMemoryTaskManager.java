@@ -8,7 +8,8 @@ import tasks.Task;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
-    private int idCounter; //id для простых задач и эпиков
+    private int taskIdCounter; //id для простых задач и эпиков
+    private int epicIdCounter; //id для простых задач и эпиков
     private int subtaskIdCounter; //id для подзадач
 
     private HistoryManager historyManager = Managers.getDefaultHistory();
@@ -17,8 +18,12 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Epic> epics = new HashMap<>(); // для хранения крупных задач
     private Map<Epic, HashMap<Integer, Subtask>> subtasks = new HashMap<>(); // для хранения подзадач
 
-    private int getId() {
-        return idCounter;
+    private int getTaskId() {
+        return taskIdCounter;
+    }
+
+    private int getEpicId() {
+        return epicIdCounter;
     }
 
     private int getSubtaskId() {
@@ -74,6 +79,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeAllTask() {
         commonTasks.clear();
+        taskIdCounter = 0;
         System.out.println("Коллекция успешно очищена!");
     }
 
@@ -81,6 +87,8 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeAllEpic() {
         epics.clear();
         subtasks.clear();
+        epicIdCounter = 0;
+        subtaskIdCounter = 0;
         System.out.println("Коллекция успешно очищена!");
     }
 
@@ -90,6 +98,7 @@ public class InMemoryTaskManager implements TaskManager {
         for (Epic epic : epics.values()) {
             epic.setStatus(Status.NEW);
         }
+        epicIdCounter = 0;
         System.out.println("Коллекция успешно очищена!");
     }
 
@@ -127,20 +136,29 @@ public class InMemoryTaskManager implements TaskManager {
     //Добавление задачи в коллекцию
     @Override
     public void createTask(Task task) {
-        if (task.getId() > idCounter) {
-            commonTasks.put(task.getId(), task);
+        if (taskIdCounter >= epicIdCounter) {
+            taskIdCounter++;
+            task.setId(taskIdCounter);
         } else {
-            idCounter++;
-            commonTasks.put(getId(), task);
-            task.setId(idCounter);
+            taskIdCounter = epicIdCounter + 1;
+            if (task.getId() != 0 ) {
+                task.setId(task.getId());
+            } else {
+                task.setId(taskIdCounter);
+            }
         }
+        commonTasks.put(task.getId(), task);
     }
 
     @Override
     public void createEpic(Epic epic) {
-        idCounter++;
-        epics.put(getId(), epic);
-        epic.setId(idCounter);
+        if (epicIdCounter < taskIdCounter) {
+            epicIdCounter = taskIdCounter + 1;
+        } else {
+            epicIdCounter++;
+        }
+        epic.setId(epicIdCounter);
+        epics.put(epic.getId(), epic);
     }
 
     @Override

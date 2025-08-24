@@ -11,10 +11,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node first;
     private Node last;
 
-    public List<Task> getList() {
-        return list;
-    }
-
     private List<Task> getTasks() {
         return new ArrayList<>(list);
     }

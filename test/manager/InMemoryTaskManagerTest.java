@@ -1,8 +1,6 @@
 package manager;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import tasks.Epic;
@@ -19,8 +17,8 @@ class InMemoryTaskManagerTest {
 
     static TaskManager taskManager = Managers.getDefault();
 
-    @BeforeAll
-    public static void createTasks() {
+    @BeforeEach
+    public void createTasks() {
         taskManager.createTask(new Task(TASK_TITLE[0], TASK_DESCRIPTION[0], DEFAULT_STATUS));
         taskManager.createTask(new Task(TASK_TITLE[1], TASK_DESCRIPTION[1], DEFAULT_STATUS));
         taskManager.createTask(new Task(TASK_TITLE[2], TASK_DESCRIPTION[2], DEFAULT_STATUS));
@@ -38,6 +36,13 @@ class InMemoryTaskManagerTest {
         taskManager.createSubtask(epic2, new Subtask(SUBTASK_TITLE[3], SUBTASK_DESCRIPTION[3], DEFAULT_STATUS));
         taskManager.createSubtask(epic2, new Subtask(SUBTASK_TITLE[4], SUBTASK_DESCRIPTION[4], DEFAULT_STATUS));
         taskManager.createSubtask(epic2, new Subtask(SUBTASK_TITLE[5], SUBTASK_DESCRIPTION[5], DEFAULT_STATUS));
+    }
+
+    @AfterEach
+    public void clear() {
+        taskManager.removeAllEpic();
+        taskManager.removeAllTask();
+        taskManager.removeAllSubtask();
     }
 
     @DisplayName("Проверяет список созданных задач в @BeforeAll на null и сравнивает две задачи на равенство")
@@ -147,11 +152,11 @@ class InMemoryTaskManagerTest {
     @DisplayName("Проверяет, что метод возвращает по id ожидаемые подзадачи")
     @ParameterizedTest
     @MethodSource("manager.Stubs#getSubtaskById")
-    void inMemoryTaskManager_getSubtask_shouldReturnExpectedSubtaskByEpicAndId_Test(Subtask returnExpected, Epic epic, int id) {
+    void inMemoryTaskManager_getSubtask_shouldReturnExpectedSubtaskByEpicAndId_Test(Subtask returnExpected, int epicId, int subtaskId) {
         //given-when
-        returnExpected.setId(id);
+        returnExpected.setId(subtaskId);
         //then
-        Subtask returnActual = taskManager.getSubtask(epic, id);
+        Subtask returnActual = taskManager.getSubtask(taskManager.getEpic(epicId), subtaskId);
         assertEquals(returnExpected, returnActual);
     }
 
@@ -161,6 +166,7 @@ class InMemoryTaskManagerTest {
         //given
         Task task = new Task("Задача № 10", "Описание № 10", 10, DEFAULT_STATUS);
         //when
+        task.setId(10);
         taskManager.createTask(task);
         //then
         assertEquals(task, taskManager.getTask(10));
@@ -185,5 +191,6 @@ class InMemoryTaskManagerTest {
         assertEquals(expectedDescription, taskExpected.getDescription());
         assertEquals(expectedId,taskExpected.getId());
         assertEquals(expectedStatus, taskExpected.getStatus());
+        taskManager.removeTask(7);
     }
 }

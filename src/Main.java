@@ -24,9 +24,12 @@ public class Main {
         //Создание и добавление эпиков
         var epic1 = new Epic("Эпик № 1", "Описание эпика № 1", Status.NEW);
         var epic2 = new Epic("Эпик № 2", "Описание эпика № 2", Status.NEW);
+        var epic3 = new Epic("Эпик № 3", "Описание эпика № 3", Status.NEW);
+
 
         taskManager.createEpic(epic1);
         taskManager.createEpic(epic2);
+        taskManager.createEpic(epic3);
 
         //Создание и добавление подзадач для эпиков
         var subtask1 = new Subtask("Подзадача № 1 эпика № 1", "Описание подзадачи № 1 эпика № 1", Status.NEW);
@@ -113,6 +116,11 @@ public class Main {
         for (Epic epic : manager.getAllEpic()) {
             manager.getHistoryManager().add(epic);
             System.out.println(epic);
+
+            if (manager.getSubtasksList().get(epic) == null) {
+                System.out.println("Подзадач у данного эпика нет");
+                continue;
+            }
 
             System.out.println("Подзадачи:");
 
