@@ -12,10 +12,10 @@ public class InMemoryTaskManager implements TaskManager {
     private int epicIdCounter; //id для простых задач и эпиков
     private int subtaskIdCounter; //id для подзадач
 
-    final private HistoryManager historyManager = Managers.getDefaultHistory();
-    final private Map<Integer, Task> commonTasks = new HashMap<>(); // для хранения обычных задач
-    final private Map<Integer, Epic> epics = new HashMap<>(); // для хранения крупных задач
-    final private Map<Epic, HashMap<Integer, Subtask>> subtasks = new HashMap<>(); // для хранения подзадач
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    private final Map<Integer, Task> commonTasks = new HashMap<>(); // для хранения обычных задач
+    private final Map<Integer, Epic> epics = new HashMap<>(); // для хранения крупных задач
+    private final Map<Epic, HashMap<Integer, Subtask>> subtasks = new HashMap<>(); // для хранения подзадач
 
     private int getTaskId() {
         return taskIdCounter;
