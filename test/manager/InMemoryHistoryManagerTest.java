@@ -35,7 +35,7 @@ class InMemoryHistoryManagerTest {
         taskManager.createSubtask(epic2, new Subtask(SUBTASK_TITLE[5], SUBTASK_DESCRIPTION[5], DEFAULT_STATUS));
     }
 
-    @BeforeEach
+    @AfterEach
     public void clearHistoryList() {
         taskManager.getHistoryManager().removeAll();
     }
@@ -47,7 +47,7 @@ class InMemoryHistoryManagerTest {
         taskManager.getTask(1); // 1
         taskManager.getTask(4); // 2
         taskManager.getEpic(5); // 3
-        taskManager.getSubtask(taskManager.getEpic(6), 1); // 4 и 5
+        taskManager.getSubtask(taskManager.getEpic(6), 10); // 4 и 5
         //when
         int historyManagerSizeExpected = 5; // В списке должно находиться 5 элементов
         List<Task> listExpected = taskManager.getHistoryManager().getHistory();
@@ -64,8 +64,8 @@ class InMemoryHistoryManagerTest {
         taskManager.getTask(2); // 2
         taskManager.getTask(4); // 3
         taskManager.getEpic(5); // Должна быть удалена
-        taskManager.getSubtask(taskManager.getEpic(5), 1); // 4 и 5
-        taskManager.getSubtask(taskManager.getEpic(6), 2); // 6 и 7
+        taskManager.getSubtask(taskManager.getEpic(5), 7); // 4 и 5
+        taskManager.getSubtask(taskManager.getEpic(6), 10); // 6 и 7
         //when
         int historyManagerSizeExpected = 7; // В списке должно находиться 7 элементов
         List<Task> list = taskManager.getHistoryManager().getHistory();
@@ -83,9 +83,9 @@ class InMemoryHistoryManagerTest {
         taskManager.getTask(3); // 3
         taskManager.getTask(4); // 4
         taskManager.getEpic(5); // Должна быть удалена
-        taskManager.getSubtask(taskManager.getEpic(5), 1); // 5
-        taskManager.getSubtask(taskManager.getEpic(5), 2); // 6 и 7
-        taskManager.getSubtask(taskManager.getEpic(6), 2); // 8
+        taskManager.getSubtask(taskManager.getEpic(5), 7); // 5
+        taskManager.getSubtask(taskManager.getEpic(5), 8); // 6 и 7
+        taskManager.getSubtask(taskManager.getEpic(6), 10); // 8
         //when
         int historyManagerSizeExpected = 8;
         List<Task> list = taskManager.getHistoryManager().getHistory();

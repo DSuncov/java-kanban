@@ -27,12 +27,12 @@ public class Stubs {
 
     public static Stream<Arguments> getSubtaskById() {
         return Stream.of(
-                Arguments.of(new Subtask("Подзадача № 1.1", "Описание № 1.1", Status.NEW), 5, 1),
-                Arguments.of(new Subtask("Подзадача № 1.2", "Описание № 1.2", Status.NEW), 5, 2),
-                Arguments.of(new Subtask("Подзадача № 1.3", "Описание № 1.3", Status.NEW), 5, 3),
-                Arguments.of(new Subtask("Подзадача № 2.1", "Описание № 2.1", Status.NEW), 6, 1),
-                Arguments.of(new Subtask("Подзадача № 2.2", "Описание № 2.2", Status.NEW), 6, 2),
-                Arguments.of(new Subtask("Подзадача № 2.3", "Описание № 2.3", Status.NEW), 6, 3)
+                Arguments.of(new Subtask("Подзадача № 1.1", "Описание № 1.1", Status.NEW), 5, 7),
+                Arguments.of(new Subtask("Подзадача № 1.2", "Описание № 1.2", Status.NEW), 5, 8),
+                Arguments.of(new Subtask("Подзадача № 1.3", "Описание № 1.3", Status.NEW), 5, 9),
+                Arguments.of(new Subtask("Подзадача № 2.1", "Описание № 2.1", Status.NEW), 6, 10),
+                Arguments.of(new Subtask("Подзадача № 2.2", "Описание № 2.2", Status.NEW), 6, 11),
+                Arguments.of(new Subtask("Подзадача № 2.3", "Описание № 2.3", Status.NEW), 6, 12)
         );
     }
 }

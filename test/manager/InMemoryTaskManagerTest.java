@@ -90,7 +90,7 @@ class InMemoryTaskManagerTest {
     void should_EqualsSubtasks_IfTheirIdEquals_Test() {
         //given
         Task expectedSubtask = new Subtask(SUBTASK_TITLE[3], SUBTASK_DESCRIPTION[3], DEFAULT_STATUS);
-        expectedSubtask.setId(1);
+        expectedSubtask.setId(10);
         int subtaskId = expectedSubtask.getId();
         //when
         Task actualSubtask = taskManager.getSubtask(taskManager.getEpic(6), subtaskId);

@@ -92,10 +92,10 @@ public class HistoryTest {
         taskManagerManager.getEpic(5); //Должна быть удалена
         taskManagerManager.getEpic(6);
         taskManagerManager.getEpic(5);
-        taskManagerManager.getSubtask(epic1, 1);
-        taskManagerManager.getSubtask(epic2, 3);
-        taskManagerManager.getSubtask(epic1, 2);
-        taskManagerManager.getSubtask(epic1, 1);
+        taskManagerManager.getSubtask(epic1, 7);
+        taskManagerManager.getSubtask(epic2, 12);
+        taskManagerManager.getSubtask(epic1, 8);
+        taskManagerManager.getSubtask(epic1, 7);
 
         List<Task> actual = taskManagerManager.getHistoryManager().getHistory();
 
@@ -114,35 +114,53 @@ public class HistoryTest {
 
     @DisplayName("Проверяет метод remove()")
     @Test
-    public void should_EqualsLists_MethodRemove_Test() {
+    public void should_EqualsLists_MethodRemove1_Test() {
         //when
         taskManagerManager.getTask(1); //Должна быть удалена
         taskManagerManager.getTask(2); //Должна быть удалена
-        taskManagerManager.getTask(4);
+        taskManagerManager.getTask(4); //Должна быть удалена
         taskManagerManager.getTask(2);
         taskManagerManager.getTask(1);
         taskManagerManager.getEpic(5); //Должна быть удалена
         taskManagerManager.getEpic(6);
         taskManagerManager.getEpic(5);
-        taskManagerManager.getSubtask(epic1, 1);
-        taskManagerManager.getSubtask(epic2, 3);
-        taskManagerManager.getSubtask(epic1, 2);
-        taskManagerManager.getSubtask(epic1, 1);
+        taskManagerManager.getSubtask(epic1, 7); // Должна быть удалена
+        taskManagerManager.getSubtask(epic2, 12);
+        taskManagerManager.getSubtask(epic1, 7);
+        taskManagerManager.getSubtask(epic1, 8); //Должна быть удалена
         taskManagerManager.getHistoryManager().remove(4);
-        taskManagerManager.getHistoryManager().remove(2);
+        taskManagerManager.getHistoryManager().remove(8);
 
         List<Task> actual = taskManagerManager.getHistoryManager().getHistory();
 
-        expected.add(task4);
         expected.add(task2);
         expected.add(task1);
         expected.add(epic2);
         expected.add(epic1);
         expected.add(subtask6);
-        expected.add(subtask2);
         expected.add(subtask1);
-        expected.remove(task4);
-        expected.remove(subtask2);
+
+        //then
+        assertEquals(expected, actual);
+    }
+
+    @DisplayName("Проверяет метод remove()")
+    @Test
+    public void should_EqualsLists_MethodRemove2_Test() {
+        //when
+        taskManagerManager.getSubtask(epic1, 7);
+        taskManagerManager.getSubtask(epic1, 8);
+        taskManagerManager.getSubtask(epic1, 9);
+        taskManagerManager.getSubtask(epic2, 10);
+        taskManagerManager.getSubtask(epic2, 11);
+        taskManagerManager.getSubtask(epic2, 12);
+        taskManagerManager.getTask(1);
+        taskManagerManager.removeEpic(5);
+        taskManagerManager.removeEpic(6);
+
+        List<Task> actual = taskManagerManager.getHistoryManager().getHistory();
+
+        expected.add(task1);
 
         //then
         assertEquals(expected, actual);

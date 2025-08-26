@@ -26,7 +26,6 @@ public class Main {
         var epic2 = new Epic("Эпик № 2", "Описание эпика № 2", Status.NEW);
         var epic3 = new Epic("Эпик № 3", "Описание эпика № 3", Status.NEW);
 
-
         taskManager.createEpic(epic1);
         taskManager.createEpic(epic2);
         taskManager.createEpic(epic3);
@@ -48,7 +47,7 @@ public class Main {
 
         printAllTasks(taskManager);
 
-        System.out.println(epic1.getSubtasksid()); // Выводим id подзадач из эпика 1 (должно быть 1, 2, 3)
+        System.out.println(epic1.getSubtasksId()); // Выводим id подзадач из эпика 1 (должно быть 8, 9, 10)
         System.out.println(subtask6.getEpicid()); // Выводим id эпика, в которой хранится подзадача (должно быть 6)
 
         System.out.println(taskManager
@@ -80,7 +79,7 @@ public class Main {
                 .toString()
                 .replace("[", "").replace("]", ""));
         System.out.print(taskManager
-                .getSubtask(epic2, 1)
+                .getSubtask(epic2, 11)
                 .toString()
                 .replace("[", "").replace("]", ""));
         System.out.println("-".repeat(100));
@@ -88,15 +87,15 @@ public class Main {
         //Удаление задачи по id
         taskManager.removeTask(2);
         taskManager.removeEpic(5);
-        taskManager.removeSubtask(epic2, 1);
+        taskManager.removeSubtask(epic2, 11);
         System.out.println("-".repeat(100));
 
         //Обновляем задачи
         taskManager.updateTask(1, "Задача № 1 обновлена", "Описание обновленной задачи № 1", Status.DONE);
-        taskManager.updateEpic(6, "Эпик № 2 обновлен", "Описание обновленного эпика № 2");
-        taskManager.updateSubtask(6, 2, "Подзадача № 2 эпика № 2 обновлена", "Описание обновленной подзадачи № 2 эпика № 2", Status.IN_PROGRESS);
-        taskManager.updateSubtask(6, 1, "Подзадача № 1 эпика № 2 обновлена", "Описание обновленной подзадачи № 1 эпика № 2", Status.NEW);
-        taskManager.updateSubtask(6, 3, "Подзадача № 3 эпика № 2 обновлена", "Описание обновленной подзадачи № 3 эпика № 2", Status.DONE);
+        taskManager.updateEpic(7, "Эпик № 2 обновлен", "Описание обновленного эпика № 2");
+        taskManager.updateSubtask(6, 11, "Подзадача № 2 эпика № 2 обновлена", "Описание обновленной подзадачи № 2 эпика № 2", Status.IN_PROGRESS);
+        taskManager.updateSubtask(6, 12, "Подзадача № 1 эпика № 2 обновлена", "Описание обновленной подзадачи № 1 эпика № 2", Status.NEW);
+        taskManager.updateSubtask(6, 13, "Подзадача № 3 эпика № 2 обновлена", "Описание обновленной подзадачи № 3 эпика № 2", Status.DONE);
         System.out.println("-".repeat(100));
 
         //Удаление всех задач
