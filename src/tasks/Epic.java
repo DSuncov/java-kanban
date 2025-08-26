@@ -6,18 +6,18 @@ import java.util.Objects;
 
 public class Epic extends Task {
 
-    public List<Integer> subtasksid = new ArrayList<>(); // поле для хранения id подзадач
+    public List<Integer> subtasksId = new ArrayList<>(); // поле для хранения id подзадач
 
     public Epic(String title, String description, Status status) {
         super(title, description, Status.NEW);
     }
 
-    public List<Integer> getSubtasksid() {
-        return subtasksid;
+    public List<Integer> getSubtasksId() {
+        return subtasksId;
     }
 
-    public void setSubtasksid(int subtasksid) {
-        this.subtasksid.add(subtasksid);
+    public void setSubtasksid(int subtasksId) {
+        this.subtasksId.add(subtasksId);
     }
 
     @Override
