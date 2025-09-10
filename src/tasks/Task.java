@@ -4,10 +4,10 @@ import java.util.Objects;
 
 public class Task {
 
-    private String title;
-    private String description;
     private int id;
+    private String title;
     private Status status;
+    private String description;
 
     public Task(String title, String description, Status status) {
         this.title = title;
@@ -21,6 +21,8 @@ public class Task {
         this.id = id;
         this.status = status;
     }
+
+    public Task() {}
 
     public int getId() {
         return id;

@@ -135,6 +135,12 @@ public class InMemoryTaskManager implements TaskManager {
     //Добавление задачи в коллекцию
     @Override
     public void createTask(Task task) {
+        int setterId = task.getId(); // Если создаем задачу и вручную устанавливаем id
+
+        if (setterId == taskIdCounter + 1 || setterId == epicIdCounter + 1) {
+            taskIdCounter = getTaskId() + 1;
+        }
+
         if (taskIdCounter >= epicIdCounter) {
             taskIdCounter++;
             task.setId(taskIdCounter);
@@ -143,11 +149,21 @@ public class InMemoryTaskManager implements TaskManager {
             int id = task.getId();
             task.setId(Math.max(id, taskIdCounter));
         }
+
+        if (setterId != 0) {
+            task.setId(setterId);
+        }
         commonTasks.put(task.getId(), task);
     }
 
     @Override
     public void createEpic(Epic epic) {
+        int setterId = epic.getId(); // Если создаем задачу и вручную устанавливаем id
+
+        if (setterId == epicIdCounter + 1 || setterId == taskIdCounter + 1) {
+            epicIdCounter = getEpicId() + 1;
+        }
+
         if (epicIdCounter <= taskIdCounter) {
             epicIdCounter = taskIdCounter + 1;
             epic.setId(epicIdCounter);
@@ -156,11 +172,21 @@ public class InMemoryTaskManager implements TaskManager {
             int id = epic.getId();
             epic.setId(Math.max(id, epicIdCounter));
         }
+
+        if (setterId != 0) {
+            epic.setId(setterId);
+        }
         epics.put(epic.getId(), epic);
     }
 
     @Override
     public void createSubtask(Epic epic, Subtask subtask) {
+        int setterId = subtask.getId(); // Если создаем задачу и вручную устанавливаем id
+
+        if (setterId == subtaskIdCounter + 1 || setterId == epicIdCounter + 1 || setterId == taskIdCounter + 1) {
+            subtaskIdCounter = getSubtaskId() + 1;
+        }
+
         if (subtaskIdCounter <= epicIdCounter && subtaskIdCounter <= taskIdCounter) {
             subtaskIdCounter = Math.max(epicIdCounter, taskIdCounter) + 1;
             subtask.setId(subtaskIdCounter);
@@ -169,6 +195,12 @@ public class InMemoryTaskManager implements TaskManager {
             int id = subtask.getId();
             subtask.setId(Math.max(id, subtaskIdCounter));
         }
+
+        if (setterId != 0) {
+            subtaskIdCounter = setterId;
+            subtask.setId(setterId);
+        }
+
         subtasks.computeIfAbsent(epic, k -> new HashMap<>()).put(getSubtaskId(), subtask);
 
         subtask.setEpicId(epic.getId()); // получаем id эпика и устанавливаем его для подзадачи

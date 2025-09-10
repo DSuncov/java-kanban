@@ -9,7 +9,7 @@ public class Epic extends Task {
     public List<Integer> subtasksId = new ArrayList<>(); // поле для хранения id подзадач
 
     public Epic(String title, String description, Status status) {
-        super(title, description, Status.NEW);
+        super(title, description, status);
     }
 
     public List<Integer> getSubtasksId() {
