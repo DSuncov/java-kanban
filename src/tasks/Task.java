@@ -22,7 +22,9 @@ public class Task {
         this.status = status;
     }
 
-    public Task() {}
+    public Task() {
+
+    }
 
     public int getId() {
         return id;
