@@ -86,18 +86,18 @@ public class Main {
         System.out.println("-".repeat(100));
 
         //Удаление задачи по id
-//        taskManager.removeTask(2);
-//        taskManager.removeEpic(5);
-//        taskManager.removeSubtask(epic2, 11);
-//        System.out.println("-".repeat(100));
+        taskManager.removeTask(2);
+        taskManager.removeEpic(5);
+        taskManager.removeSubtask(epic2, 11);
+        System.out.println("-".repeat(100));
 
         //Обновляем задачи
-//        taskManager.updateTask(1, "Задача № 1 обновлена", "Описание обновленной задачи № 1", Status.DONE);
-//        taskManager.updateEpic(7, "Эпик № 2 обновлен", "Описание обновленного эпика № 2");
-//        taskManager.updateSubtask(6, 11, "Подзадача № 2 эпика № 2 обновлена", "Описание обновленной подзадачи № 2 эпика № 2", Status.IN_PROGRESS);
-//        taskManager.updateSubtask(6, 12, "Подзадача № 1 эпика № 2 обновлена", "Описание обновленной подзадачи № 1 эпика № 2", Status.NEW);
-//        taskManager.updateSubtask(6, 13, "Подзадача № 3 эпика № 2 обновлена", "Описание обновленной подзадачи № 3 эпика № 2", Status.DONE);
-//        System.out.println("-".repeat(100));
+        taskManager.updateTask(1, "Задача № 1 обновлена", "Описание обновленной задачи № 1", Status.DONE);
+        taskManager.updateEpic(7, "Эпик № 2 обновлен", "Описание обновленного эпика № 2");
+        taskManager.updateSubtask(6, 11, "Подзадача № 2 эпика № 2 обновлена", "Описание обновленной подзадачи № 2 эпика № 2", Status.IN_PROGRESS);
+        taskManager.updateSubtask(6, 12, "Подзадача № 1 эпика № 2 обновлена", "Описание обновленной подзадачи № 1 эпика № 2", Status.NEW);
+        taskManager.updateSubtask(6, 13, "Подзадача № 3 эпика № 2 обновлена", "Описание обновленной подзадачи № 3 эпика № 2", Status.DONE);
+        System.out.println("-".repeat(100));
 
         //Удаление всех задач
 //        taskManager.removeAllTask();

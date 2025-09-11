@@ -1,6 +1,8 @@
 package manager;
 
 
+import exception.ManagerLoadException;
+import exception.ManagerSaveException;
 import tasks.*;
 
 import java.io.*;
@@ -126,9 +128,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         try {
             String result = Files.readString(file.toPath(), StandardCharsets.UTF_8).replace("\r", "");
+            if (result.isBlank()) {
+                throw new ManagerLoadException("Файл пустой или содержит только пробельные символы.");
+            }
+
             String[] str = result.split("\n");
+            int startElement;
+            if (str[0].equals(taskManager.header)) {
+                startElement = 1;
+            } else {
+                startElement = 0;
+            }
+
             taskManager.setHeader(str[0]);
-            for (int i = 1; i < str.length; i++) {
+            for (int i = startElement; i < str.length; i++) {
                 Task task = taskManager.fromString(str[i]);
                 if (task instanceof Subtask subtask) {
                     subtask.setId(task.getId());
@@ -141,9 +154,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
             System.out.println(result);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ManagerLoadException("Произошла ошибка при загрузке из файла.");
         }
-
         return taskManager;
     }
 

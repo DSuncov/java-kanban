@@ -1,6 +1,8 @@
 package manager;
 
+import exception.ManagerLoadException;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FileBackedTaskManagerTest {
 
@@ -78,7 +80,7 @@ public class FileBackedTaskManagerTest {
     @ParameterizedTest
     @MethodSource("manager.Stubs#getTaskById")
     public void should_Return_Equals_Tasks(Task task) throws IOException {
-        File file = new File("test.csv");
+        File file = File.createTempFile("test", "csv");
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
         manager.createTask(task);
 
@@ -95,7 +97,7 @@ public class FileBackedTaskManagerTest {
     @ParameterizedTest
     @MethodSource("manager.Stubs#getEpicById")
     public void should_Return_Equals_Epics(Epic task) throws IOException {
-        File file = new File("test.csv");
+        File file = File.createTempFile("test", "csv");
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
         manager.createTask(task);
 
@@ -112,7 +114,7 @@ public class FileBackedTaskManagerTest {
     @ParameterizedTest
     @MethodSource("manager.Stubs#getSubtaskById")
     public void should_Return_Equals_Subtasks(Subtask task) throws IOException {
-        File file = new File("test.csv");
+        File file = File.createTempFile("test", "csv");
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
         manager.createTask(task);
 
@@ -123,5 +125,11 @@ public class FileBackedTaskManagerTest {
         Task taskFromString = manager.fromString(element);
 
         assertEquals(task, taskFromString);
+    }
+
+    @DisplayName("Проверяет метод loadFromFile, должно выбрасываться ManagerLoadException, если файл пустой")
+    @Test
+    public void should_Return_LoadException_If_File_isBlank() {
+        assertThrows(ManagerLoadException.class, () -> FileBackedTaskManager.loadFromFile(new File(String.valueOf(File.createTempFile("tasks_blank", "csv")))));
     }
 }

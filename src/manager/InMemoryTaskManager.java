@@ -204,7 +204,7 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.computeIfAbsent(epic, k -> new HashMap<>()).put(getSubtaskId(), subtask);
 
         subtask.setEpicId(epic.getId()); // получаем id эпика и устанавливаем его для подзадачи
-        epic.setSubtasksid(subtaskIdCounter);
+        epic.setSubtasksId(subtaskIdCounter);
     }
 
     //Удаление задачи по id из коллекции
