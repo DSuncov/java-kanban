@@ -16,6 +16,8 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> commonTasks = new HashMap<>(); // для хранения обычных задач
     private final Map<Integer, Epic> epics = new HashMap<>(); // для хранения крупных задач
     private final Map<Epic, HashMap<Integer, Subtask>> subtasks = new HashMap<>(); // для хранения подзадач
+    private final Set<Task> tasksSortedByStartTime = new TreeSet<>(Comparator.comparing(Task::getStartTime).thenComparing(Task::getDuration));
+    private Task lastIntersection;
 
     private int getTaskId() {
         return taskIdCounter;
@@ -94,6 +96,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeAllSubtask() {
         subtasks.clear();
+
         for (Epic epic : epics.values()) {
             epic.setStatus(Status.NEW);
         }
@@ -153,6 +156,15 @@ public class InMemoryTaskManager implements TaskManager {
         if (setterId != 0) {
             task.setId(setterId);
         }
+
+        tasksSortedByStartTime.add(task);
+
+        if (isIntersection(task)) {
+            System.out.println("Подзадачи пересекаются. Время старта добавляемой задачи: <" + task.getTitle() + "> " + task.getStartTime() + ", время окончания: " + task.getEndTime() +
+                    ". Имеется пересечение с задачей: <" + lastIntersection.getTitle() + ">. Время старта: " + lastIntersection.getStartTime() + ", время окончания: " + lastIntersection.getEndTime());
+            tasksSortedByStartTime.remove(task);
+            return;
+        }
         commonTasks.put(task.getId(), task);
     }
 
@@ -176,6 +188,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (setterId != 0) {
             epic.setId(setterId);
         }
+
         epics.put(epic.getId(), epic);
     }
 
@@ -201,10 +214,26 @@ public class InMemoryTaskManager implements TaskManager {
             subtask.setId(setterId);
         }
 
+        tasksSortedByStartTime.add(subtask);
+
+        if (isIntersection(subtask)) {
+            System.out.println("Подзадачи пересекаются. Время старта добавляемой задачи: <" + subtask.getTitle() + "> " + subtask.getStartTime() + ", время окончания: " + subtask.getEndTime() +
+                    ". Имеется пересечение с задачей: <" + lastIntersection.getTitle() + ">. Время старта: " + lastIntersection.getStartTime() + ", время окончания: " + lastIntersection.getEndTime());
+            tasksSortedByStartTime.remove(subtask);
+            tasksSortedByStartTime.remove(epic);
+            return;
+        }
+
         subtasks.computeIfAbsent(epic, k -> new HashMap<>()).put(getSubtaskId(), subtask);
 
         subtask.setEpicId(epic.getId()); // получаем id эпика и устанавливаем его для подзадачи
         epic.setSubtasksId(subtaskIdCounter);
+
+        epic.setStartTime(subtask);
+        epic.setDuration(subtask);
+
+        updateEpicStatus(subtask.getEpicId());
+        tasksSortedByStartTime.add(epic);
     }
 
     //Удаление задачи по id из коллекции
@@ -214,8 +243,10 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.print("Обычной задачи с таким id не существует!");
             return;
         }
+        Task task = commonTasks.get(id);
         historyManager.remove(id);
         commonTasks.remove(id);
+        tasksSortedByStartTime.remove(task);
         System.out.println("Задача успешно удалена!");
     }
 
@@ -226,14 +257,18 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
         Epic epic = epics.get(id);
+
         if (subtasks.containsKey(epic)) {
             for (Subtask subtask : subtasks.get(epic).values()) {
                 historyManager.remove(subtask.getId());
+                subtasks.remove(epic);
+                tasksSortedByStartTime.remove(subtask);
             }
             subtasks.remove(epic);
         }
         historyManager.remove(id);
         epics.remove(id);
+        tasksSortedByStartTime.remove(epic);
         System.out.println("Задача успешно удалена!");
     }
 
@@ -243,8 +278,10 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.print("Подзадачи с таким id не существует!");
             return;
         }
+        Subtask subtask = subtasks.get(epic).get(id);
         historyManager.remove(id);
         subtasks.get(epic).remove(id);
+        tasksSortedByStartTime.remove(subtask);
         System.out.println("Задача успешно удалена!");
     }
 
@@ -313,14 +350,13 @@ public class InMemoryTaskManager implements TaskManager {
         int doneCount = 0;
         int total = subtasks.get(epic).size();
 
-        for (Subtask subtask : subtasks.get(epic).values()) {
-            if (subtask.getStatus() == Status.NEW) {
-                newCount++;
-            }
-            if (subtask.getStatus() == Status.DONE) {
-                doneCount++;
-            }
-        }
+        newCount = (int) subtasks.get(epic).values().stream()
+                .filter(subtask -> subtask.getStatus() == Status.NEW)
+                .count();
+
+        doneCount = (int) subtasks.get(epic).values().stream()
+                .filter(subtask -> subtask.getStatus() == Status.DONE)
+                .count();
 
         if (newCount == total) {
             epic.setStatus(Status.NEW);
@@ -329,5 +365,39 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epic.setStatus(Status.IN_PROGRESS);
         }
+    }
+
+    @Override
+    public Set<Task> getPrioritizedTasks() {
+        return tasksSortedByStartTime;
+    }
+
+    @Override
+    public boolean isIntersection(Task task) {
+
+        return getPrioritizedTasks().stream()
+                .anyMatch(t -> {
+                    if (task instanceof Subtask) {
+                        if (((Subtask) task).getEpicId() == t.getId()) {
+                            return false;
+                        }
+                    }
+
+                    if (task instanceof Epic && t instanceof Subtask) {
+                        if (task.getId() == ((Subtask) t).getEpicId()) {
+                            return false;
+                        }
+                    }
+
+                    if ((task.getStartTime().isBefore(t.getStartTime()) && task.getEndTime().isAfter(t.getEndTime()))
+                            || (task.getStartTime().isBefore(t.getStartTime()) && task.getEndTime().isBefore(t.getEndTime()) && task.getEndTime().isAfter(t.getStartTime()))
+                            || (task.getStartTime().isAfter(t.getStartTime()) && task.getEndTime().isBefore(t.getEndTime()))
+                            || (task.getStartTime().isAfter(t.getStartTime()) && task.getEndTime().isAfter(t.getEndTime()) && task.getStartTime().isBefore(t.getEndTime())))  {
+                        lastIntersection = t;
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
     }
 }

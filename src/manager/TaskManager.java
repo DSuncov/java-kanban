@@ -8,6 +8,7 @@ import tasks.Task;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface TaskManager {
 
@@ -61,4 +62,8 @@ public interface TaskManager {
     void updateSubtask(int epicid, int subtaskid, String title, String description, Status status);
 
     HistoryManager getHistoryManager();
+
+    Set<Task> getPrioritizedTasks();
+
+    boolean isIntersection(Task task);
 }

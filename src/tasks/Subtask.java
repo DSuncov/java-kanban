@@ -6,12 +6,12 @@ public class Subtask extends Task {
 
     private int epicId;
 
-    public Subtask(String title, String description, Status status) {
-        super(title, description, status);
+    public Subtask(String title, String description, Status status, String start, Long duration) {
+        super(title, description, status, start, duration);
     }
 
-    public Subtask(String title, String description, Status status, int epicId) {
-        super(title, description, status);
+    public Subtask(String title, String description, Status status, String start, Long duration, int epicId) {
+        super(title, description, status, start, duration);
         this.epicId = epicId;
     }
 
@@ -51,6 +51,9 @@ public class Subtask extends Task {
                 .append("; Описание: ").append(getDescription())
                 .append("; id: ").append(getId())
                 .append("; Статус: ").append(getStatus())
+                .append("; Начало: ").append(getStartTime())
+                .append("; Продолжительность (минут): ").append(getDuration())
+                .append("; Конец: ").append(getEndTime())
                 .append(")").append("\n").toString();
     }
 }

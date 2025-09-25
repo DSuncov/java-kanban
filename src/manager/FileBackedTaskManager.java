@@ -8,13 +8,13 @@ import tasks.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.Duration;
+import java.util.*;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
 
-    private String header = "id,type,name,status,description,epic";
+    private String header = "id,type,name,status,description,start,duration,end,epic";
 
     public FileBackedTaskManager(File file) {
         this.file = file;
@@ -169,22 +169,30 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String title = elements[2];
         Status status = Status.valueOf(elements[3]);
         String description = elements[4];
+        String start = elements[5].replace("T", " ");
+        Long duration = Long.valueOf(elements[6]);
         int epicId;
 
         if (elements[1].equals("TASK")) {
-            task = new Task(title, description, status);
+            task = new Task(title, description, status, start, duration);
             task.setId(id);
+            task.getEndTime();
         }
 
         if (elements[1].equals("EPIC")) {
             epic = new Epic(title, description, status);
             epic.setId(id);
+            epic.setStartTime(start);
+            epic.setDuration(Duration.ofMinutes(duration));
+            epic.getEndTime();
         }
 
         if (elements[1].equals("SUBTASK")) {
-            epicId = Integer.parseInt(elements[5]);
-            subtask = new Subtask(title, description, status, epicId);
+            epicId = Integer.parseInt(elements[8]);
+            subtask = new Subtask(title, description, status, start, duration, epicId);
             subtask.setId(id);
+            subtask.setId(id);
+            subtask.getEndTime();
         }
 
         return task != null ? task : epic != null ? epic : subtask;
@@ -196,7 +204,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 .append(TaskType.getType(task)).append(",")
                 .append(task.getTitle()).append(",")
                 .append(task.getStatus()).append(",")
-                .append(task.getDescription());
+                .append(task.getDescription()).append(",")
+                .append(task.getStartTime()).append(",")
+                .append(task.getDuration()).append(",")
+                .append(task.getEndTime());
 
         if (task instanceof Subtask) {
             sb.append(",").append(((Subtask) task).getEpicId());

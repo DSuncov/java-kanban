@@ -8,14 +8,13 @@ import tasks.Task;
 
 public class Main {
     public static void main(String[] args) {
-
         TaskManager taskManager = Managers.getDefault();
 
         // Создание и добавление простых задач
-        Task task1 = new Task("Задача № 1", "Описание задачи № 1", Status.NEW);
-        Task task2 = new Task("Задача № 2", "Описание задачи № 2", Status.NEW);
-        Task task3 = new Task("Задача № 3", "Описание задачи № 3", Status.NEW);
-        Task task4 = new Task("Задача № 4", "Описание задачи № 4", Status.NEW);
+        Task task1 = new Task("Задача № 1", "Описание задачи № 1", Status.NEW, "2025-09-22 09:00", 50L);
+        Task task2 = new Task("Задача № 2", "Описание задачи № 2", Status.NEW, "2025-09-22 13:10", 40L);
+        Task task3 = new Task("Задача № 3", "Описание задачи № 3", Status.NEW, "2025-09-22 15:30", 120L);
+        Task task4 = new Task("Задача № 4", "Описание задачи № 4", Status.NEW, "2025-09-23 10:15", 300L);
 
         taskManager.createTask(task1);
         taskManager.createTask(task2);
@@ -32,12 +31,12 @@ public class Main {
         taskManager.createEpic(epic3);
 
         //Создание и добавление подзадач для эпиков
-        Subtask subtask1 = new Subtask("Подзадача № 1 эпика № 1", "Описание подзадачи № 1 эпика № 1", Status.NEW);
-        Subtask subtask2 = new Subtask("Подзадача № 2 эпика № 1", "Описание подзадачи № 2 эпика № 1", Status.NEW);
-        Subtask subtask3 = new Subtask("Подзадача № 3 эпика № 1", "Описание подзадачи № 3 эпика № 1", Status.NEW);
-        Subtask subtask4 = new Subtask("Подзадача № 1 эпика № 2", "Описание подзадачи № 1 эпика № 2", Status.NEW);
-        Subtask subtask5 = new Subtask("Подзадача № 2 эпика № 2", "Описание подзадачи № 2 эпика № 2", Status.NEW);
-        Subtask subtask6 = new Subtask("Подзадача № 3 эпика № 2", "Описание подзадачи № 3 эпика № 2", Status.NEW);
+        Subtask subtask1 = new Subtask("Подзадача № 1 эпика № 1", "Описание подзадачи № 1 эпика № 1", Status.NEW, "2025-09-23 09:00", 15L);
+        Subtask subtask2 = new Subtask("Подзадача № 2 эпика № 1", "Описание подзадачи № 2 эпика № 1", Status.NEW, "2025-09-23 10:00", 20L);
+        Subtask subtask3 = new Subtask("Подзадача № 3 эпика № 1", "Описание подзадачи № 3 эпика № 1", Status.NEW, "2025-09-23 11:00", 25L);
+        Subtask subtask4 = new Subtask("Подзадача № 1 эпика № 2", "Описание подзадачи № 1 эпика № 2", Status.NEW, "2025-09-24 09:00", 25L);
+        Subtask subtask5 = new Subtask("Подзадача № 2 эпика № 2", "Описание подзадачи № 2 эпика № 2", Status.NEW, "2025-09-24 10:00", 30L);
+        Subtask subtask6 = new Subtask("Подзадача № 3 эпика № 2", "Описание подзадачи № 3 эпика № 2", Status.NEW, "2025-09-24 11:00", 10L);
 
         taskManager.createSubtask(epic1, subtask1);
         taskManager.createSubtask(epic1, subtask2);
@@ -47,8 +46,10 @@ public class Main {
         taskManager.createSubtask(epic2, subtask6);
 
         printAllTasks(taskManager);
+        System.out.print("-".repeat(100) + "\n");
+        taskManager.getPrioritizedTasks().stream().forEach(System.out::println);
 
-        System.out.println(epic1.getSubtasksId()); // Выводим id подзадач из эпика 1 (должно быть 8, 9, 10)
+        System.out.println(epic1.getSubtasksId()); // Выводим id подзадач из эпика 1 (должно быть 8)
         System.out.println(subtask6.getEpicId()); // Выводим id эпика, в которой хранится подзадача (должно быть 6)
 
         System.out.println(taskManager
@@ -86,18 +87,18 @@ public class Main {
         System.out.println("-".repeat(100));
 
         //Удаление задачи по id
-        taskManager.removeTask(2);
-        taskManager.removeEpic(5);
-        taskManager.removeSubtask(epic2, 11);
-        System.out.println("-".repeat(100));
+//        taskManager.removeTask(2);
+//        taskManager.removeEpic(5);
+//        taskManager.removeSubtask(epic2, 11);
+//        System.out.println("-".repeat(100));
 
         //Обновляем задачи
-        taskManager.updateTask(1, "Задача № 1 обновлена", "Описание обновленной задачи № 1", Status.DONE);
-        taskManager.updateEpic(7, "Эпик № 2 обновлен", "Описание обновленного эпика № 2");
-        taskManager.updateSubtask(6, 11, "Подзадача № 2 эпика № 2 обновлена", "Описание обновленной подзадачи № 2 эпика № 2", Status.IN_PROGRESS);
-        taskManager.updateSubtask(6, 12, "Подзадача № 1 эпика № 2 обновлена", "Описание обновленной подзадачи № 1 эпика № 2", Status.NEW);
-        taskManager.updateSubtask(6, 13, "Подзадача № 3 эпика № 2 обновлена", "Описание обновленной подзадачи № 3 эпика № 2", Status.DONE);
-        System.out.println("-".repeat(100));
+//        taskManager.updateTask(1, "Задача № 1 обновлена", "Описание обновленной задачи № 1", Status.DONE);
+//        taskManager.updateEpic(7, "Эпик № 2 обновлен", "Описание обновленного эпика № 2");
+//        taskManager.updateSubtask(6, 11, "Подзадача № 2 эпика № 2 обновлена", "Описание обновленной подзадачи № 2 эпика № 2", Status.IN_PROGRESS);
+//        taskManager.updateSubtask(6, 12, "Подзадача № 1 эпика № 2 обновлена", "Описание обновленной подзадачи № 1 эпика № 2", Status.NEW);
+//        taskManager.updateSubtask(6, 13, "Подзадача № 3 эпика № 2 обновлена", "Описание обновленной подзадачи № 3 эпика № 2", Status.DONE);
+//        System.out.println("-".repeat(100));
 
         //Удаление всех задач
 //        taskManager.removeAllTask();
@@ -109,10 +110,12 @@ public class Main {
 
     private static void printAllTasks(TaskManager manager) {
         System.out.println("Задачи:");
+
         for (Task task : manager.getAllTask()) {
             manager.getHistoryManager().add(task);
             System.out.println(task);
         }
+
         System.out.println("Эпики:");
         for (Epic epic : manager.getAllEpic()) {
             manager.getHistoryManager().add(epic);
@@ -132,8 +135,6 @@ public class Main {
         }
 
         System.out.println("История:");
-        for (Task task : manager.getHistoryManager().getHistory()) {
-            System.out.println(task);
-        }
+        manager.getHistoryManager().getHistory().forEach(System.out::println);
     }
 }
