@@ -1,8 +1,6 @@
 package manager;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import tasks.Epic;
@@ -19,32 +17,52 @@ class InMemoryTaskManagerTest {
 
     static TaskManager taskManager = Managers.getDefault();
 
-    @BeforeAll
-    public static void createTasks() {
-        taskManager.createTask(new Task(TASK_TITLE[0], TASK_DESCRIPTION[0], DEFAULT_STATUS));
-        taskManager.createTask(new Task(TASK_TITLE[1], TASK_DESCRIPTION[1], DEFAULT_STATUS));
-        taskManager.createTask(new Task(TASK_TITLE[2], TASK_DESCRIPTION[2], DEFAULT_STATUS));
-        taskManager.createTask(new Task(TASK_TITLE[3], TASK_DESCRIPTION[3], DEFAULT_STATUS));
+    @BeforeEach
+    public void createTasks() {
+        Task task1 = new Task(TASK_TITLE[0], TASK_DESCRIPTION[0], DEFAULT_STATUS, TASKDATETIME[0], TASKDURATION[0]);
+        Task task2 = new Task(TASK_TITLE[1], TASK_DESCRIPTION[1], DEFAULT_STATUS, TASKDATETIME[1], TASKDURATION[1]);
+        Task task3 = new Task(TASK_TITLE[2], TASK_DESCRIPTION[2], DEFAULT_STATUS, TASKDATETIME[2], TASKDURATION[2]);
+        Task task4 = new Task(TASK_TITLE[3], TASK_DESCRIPTION[3], DEFAULT_STATUS, TASKDATETIME[3], TASKDURATION[3]);
 
-        var epic1 = new Epic(TASK_TITLE[4], TASK_DESCRIPTION[4], DEFAULT_STATUS);
-        var epic2 = new Epic(TASK_TITLE[5], TASK_DESCRIPTION[5], DEFAULT_STATUS);
+        taskManager.createTask(task1);
+        taskManager.createTask(task2);
+        taskManager.createTask(task3);
+        taskManager.createTask(task4);
+
+        Epic epic1 = new Epic(TASK_TITLE[4], TASK_DESCRIPTION[4], DEFAULT_STATUS);
+        Epic epic2 = new Epic(TASK_TITLE[5], TASK_DESCRIPTION[5], DEFAULT_STATUS);
 
         taskManager.createEpic(epic1);
         taskManager.createEpic(epic2);
 
-        taskManager.createSubtask(epic1, new Subtask(SUBTASK_TITLE[0], SUBTASK_DESCRIPTION[0], DEFAULT_STATUS));
-        taskManager.createSubtask(epic1, new Subtask(SUBTASK_TITLE[1], SUBTASK_DESCRIPTION[1], DEFAULT_STATUS));
-        taskManager.createSubtask(epic1, new Subtask(SUBTASK_TITLE[2], SUBTASK_DESCRIPTION[2], DEFAULT_STATUS));
-        taskManager.createSubtask(epic2, new Subtask(SUBTASK_TITLE[3], SUBTASK_DESCRIPTION[3], DEFAULT_STATUS));
-        taskManager.createSubtask(epic2, new Subtask(SUBTASK_TITLE[4], SUBTASK_DESCRIPTION[4], DEFAULT_STATUS));
-        taskManager.createSubtask(epic2, new Subtask(SUBTASK_TITLE[5], SUBTASK_DESCRIPTION[5], DEFAULT_STATUS));
+        Subtask subtask1 = new Subtask(SUBTASK_TITLE[0], SUBTASK_DESCRIPTION[0], DEFAULT_STATUS, SUBTASKDATETIME[0], SUBTASKDURATION[0]);
+        Subtask subtask2 = new Subtask(SUBTASK_TITLE[1], SUBTASK_DESCRIPTION[1], DEFAULT_STATUS, SUBTASKDATETIME[1], SUBTASKDURATION[1]);
+        Subtask subtask3 = new Subtask(SUBTASK_TITLE[2], SUBTASK_DESCRIPTION[2], DEFAULT_STATUS, SUBTASKDATETIME[2], SUBTASKDURATION[2]);
+        Subtask subtask4 = new Subtask(SUBTASK_TITLE[3], SUBTASK_DESCRIPTION[3], DEFAULT_STATUS, SUBTASKDATETIME[3], SUBTASKDURATION[3]);
+        Subtask subtask5 = new Subtask(SUBTASK_TITLE[4], SUBTASK_DESCRIPTION[4], DEFAULT_STATUS, SUBTASKDATETIME[4], SUBTASKDURATION[4]);
+        Subtask subtask6 = new Subtask(SUBTASK_TITLE[5], SUBTASK_DESCRIPTION[5], DEFAULT_STATUS, SUBTASKDATETIME[5], SUBTASKDURATION[5]);
+
+        taskManager.createSubtask(epic1, subtask1);
+        taskManager.createSubtask(epic1, subtask2);
+        taskManager.createSubtask(epic1, subtask3);
+        taskManager.createSubtask(epic2, subtask4);
+        taskManager.createSubtask(epic2, subtask5);
+        taskManager.createSubtask(epic2, subtask6);
+    }
+
+    @AfterEach
+    public void clear() {
+        taskManager.removeAllEpic();
+        taskManager.removeAllTask();
+        taskManager.removeAllSubtask();
+        taskManager.getPrioritizedTasks().clear();
     }
 
     @DisplayName("Проверяет список созданных задач в @BeforeAll на null и сравнивает две задачи на равенство")
     @Test
     void should_EqualsTasks_IfTheirIdEquals_Test() {
         //given
-        Task expectedTask = new Task(TASK_TITLE[0], TASK_DESCRIPTION[0], DEFAULT_STATUS);
+        Task expectedTask = new Task(TASK_TITLE[0], TASK_DESCRIPTION[0], DEFAULT_STATUS, TASKDATETIME[0], TASKDURATION[0]);
         expectedTask.setId(1);
         int taskId = expectedTask.getId();
         //when
@@ -84,8 +102,8 @@ class InMemoryTaskManagerTest {
     @Test
     void should_EqualsSubtasks_IfTheirIdEquals_Test() {
         //given
-        Task expectedSubtask = new Subtask(SUBTASK_TITLE[3], SUBTASK_DESCRIPTION[3], DEFAULT_STATUS);
-        expectedSubtask.setId(1);
+        Task expectedSubtask = new Subtask(SUBTASK_TITLE[3], SUBTASK_DESCRIPTION[3], DEFAULT_STATUS, SUBTASKDATETIME[3], SUBTASKDURATION[3]);
+        expectedSubtask.setId(10);
         int subtaskId = expectedSubtask.getId();
         //when
         Task actualSubtask = taskManager.getSubtask(taskManager.getEpic(6), subtaskId);
@@ -102,7 +120,7 @@ class InMemoryTaskManagerTest {
 
     @DisplayName("Проверяет, что метод getDefault() возвращает проинициализированный объект TaskManager")
     @Test
-    void Managers_GetDefault_shouldReturnInitializedTaskManager_Test() {
+    void managers_GetDefault_shouldReturnInitializedTaskManager_Test() {
         //given-when
         TaskManager taskManager = Managers.getDefault();
         //then
@@ -114,7 +132,7 @@ class InMemoryTaskManagerTest {
 
     @DisplayName("Проверяет, что метод getDefaultHistory() возвращает проинициализированный объект HistoryManager")
     @Test
-    void Managers_GetDefaultHistory_shouldReturnInitializedHistoryManager_Test() {
+    void managers_GetDefaultHistory_shouldReturnInitializedHistoryManager_Test() {
         //given-when
         HistoryManager taskManager = Managers.getDefaultHistory();
         //then
@@ -127,7 +145,7 @@ class InMemoryTaskManagerTest {
     @DisplayName("Проверяет, что метод возвращает по id ожидаемые задачи")
     @ParameterizedTest
     @MethodSource("manager.Stubs#getTaskById")
-    void InMemoryTaskManager_getTask_shouldReturnExpectedTaskById_Test(Task returnExpected, int id) {
+    void inMemoryTaskManager_getTask_shouldReturnExpectedTaskById_Test(Task returnExpected, int id) {
         //given-when
         returnExpected.setId(id);
         //then
@@ -137,7 +155,7 @@ class InMemoryTaskManagerTest {
     @DisplayName("Проверяет, что метод возвращает по id ожидаемые эпики")
     @ParameterizedTest
     @MethodSource("manager.Stubs#getEpicById")
-    void InMemoryTaskManager_getEpic_shouldReturnExpectedEpicById_Test(Epic returnExpected, int id) {
+    void inMemoryTaskManager_getEpic_shouldReturnExpectedEpicById_Test(Epic returnExpected, int id) {
         //given-when
         returnExpected.setId(id);
         //then
@@ -147,19 +165,22 @@ class InMemoryTaskManagerTest {
     @DisplayName("Проверяет, что метод возвращает по id ожидаемые подзадачи")
     @ParameterizedTest
     @MethodSource("manager.Stubs#getSubtaskById")
-    void InMemoryTaskManager_getSubtask_shouldReturnExpectedSubtaskByEpicAndId_Test(Subtask returnExpected, Epic epic, int id) {
+    void inMemoryTaskManager_getSubtask_shouldReturnExpectedSubtaskByEpicAndId_Test(Subtask returnExpected, int epicId, int subtaskId) {
         //given-when
-        returnExpected.setId(id);
+        returnExpected.setId(subtaskId);
+        returnExpected.setEpicId(epicId);
         //then
-        assertEquals(returnExpected, taskManager.getSubtask(epic, id));
+        Subtask returnActual = taskManager.getSubtask(taskManager.getEpic(epicId), subtaskId);
+        assertEquals(returnExpected, returnActual);
     }
 
     @DisplayName("Проверяет, что метод добавляет в список задачу с установленным id, а не меняет его через инкрементацию в idCounter")
     @Test
-    void InMemoryTaskManager_getTask_shouldReturnTask_WithSetId_Test() {
+    void inMemoryTaskManager_getTask_shouldReturnTask_WithSetId_Test() {
         //given
         Task task = new Task("Задача № 10", "Описание № 10", 10, DEFAULT_STATUS);
         //when
+        task.setId(10);
         taskManager.createTask(task);
         //then
         assertEquals(task, taskManager.getTask(10));
@@ -169,7 +190,7 @@ class InMemoryTaskManagerTest {
 
     @DisplayName("Проверяет, что созданный объект задачи не изменяет свои поля после добавления в список задач")
     @Test
-    void InMemoryTaskManager_getTask_shouldReturnImmutableTask_AfterAddToList_Test() {
+    void inMemoryTaskManager_getTask_shouldReturnImmutableTask_AfterAddToList_Test() {
         //given
         Task task = new Task("Задача № 7", "Описание № 7", DEFAULT_STATUS);
         String expectedTitle = task.getTitle();
@@ -178,10 +199,82 @@ class InMemoryTaskManagerTest {
         Status expectedStatus = task.getStatus();
         //when
         taskManager.createTask(task);
+        Task taskExpected = taskManager.getTask(7);
         //then
-        assertEquals(expectedTitle, taskManager.getTask(7).getTitle());
-        assertEquals(expectedDescription, taskManager.getTask(7).getDescription());
-        assertEquals(expectedId, taskManager.getTask(7).getId());
-        assertEquals(expectedStatus, taskManager.getTask(7).getStatus());
+        assertEquals(expectedTitle, taskExpected.getTitle());
+        assertEquals(expectedDescription, taskExpected.getDescription());
+        assertEquals(expectedId,taskExpected.getId());
+        assertEquals(expectedStatus, taskExpected.getStatus());
+        taskManager.removeTask(7);
+    }
+
+    @DisplayName("Проверяет пересечение между задачами")
+    @Test
+    void inMemoryTaskManager_isIntersection_shouldReturnCorrectResult_Test1() {
+        Task task = new Task("Задача № 1", "Описание задачи № 1", Status.NEW, "2025-09-22 09:30", 50L);
+        taskManager.createTask(task);
+
+        boolean actual = taskManager.isIntersection(task);
+        boolean expected = true;
+
+        assertEquals(actual, expected);
+
+        taskManager.getPrioritizedTasks().remove(task);
+    }
+
+    @DisplayName("Проверяет пересечение между задачами")
+    @Test
+    void inMemoryTaskManager_isIntersection_shouldReturnCorrectResult_Test2() {
+        Task task = new Task("Задача № 1", "Описание задачи № 1", Status.NEW, "2025-09-22 11:30", 50L);
+        taskManager.createTask(task);
+
+        boolean actual = taskManager.isIntersection(task);
+        boolean expected = true;
+
+        assertEquals(actual, expected);
+
+        taskManager.getPrioritizedTasks().remove(task);
+    }
+
+    @DisplayName("Проверяет пересечение между задачами")
+    @Test
+    void inMemoryTaskManager_isIntersection_shouldReturnCorrectResult_Test3() {
+        Task task = new Task("Задача № 1", "Описание задачи № 1", Status.NEW, "2025-09-22 12:10", 50L);
+        taskManager.createTask(task);
+
+        boolean actual = taskManager.isIntersection(task);
+        boolean expected = true;
+
+        assertEquals(actual, expected);
+
+        taskManager.getPrioritizedTasks().remove(task);
+    }
+
+    @DisplayName("Проверяет пересечение между задачами")
+    @Test
+    void inMemoryTaskManager_isIntersection_shouldReturnCorrectResult_Test4() {
+        Task task = new Task("Задача № 1", "Описание задачи № 1", Status.NEW, "2025-09-22 12:30", 50L);
+        taskManager.createTask(task);
+
+        boolean actual = taskManager.isIntersection(task);
+        boolean expected = false;
+
+        assertEquals(actual, expected);
+
+        taskManager.getPrioritizedTasks().remove(task);
+    }
+
+    @DisplayName("Проверяет пересечение между задачами")
+    @Test
+    void inMemoryTaskManager_isIntersection_shouldReturnCorrectResult_Test5() {
+        Task task = new Task("Задача № 1", "Описание задачи № 1", Status.NEW, "2025-09-22 10:45", 15L);
+        taskManager.createTask(task);
+
+        boolean actual = taskManager.isIntersection(task);
+        boolean expected = false;
+
+        assertEquals(actual, expected);
+
+        taskManager.getPrioritizedTasks().remove(task);
     }
 }

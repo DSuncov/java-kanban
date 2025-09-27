@@ -4,28 +4,28 @@ import java.util.Objects;
 
 public class Subtask extends Task {
 
-    private int epicid;
+    private int epicId;
 
-    public Subtask(String title, String description, Status status) {
-        super(title, description, status);
+    public Subtask(String title, String description, Status status, String start, Long duration) {
+        super(title, description, status, start, duration);
     }
 
-    public Subtask(String title, String description, Status status, int epicid) {
-        super(title, description, status);
-        this.epicid = epicid;
+    public Subtask(String title, String description, Status status, String start, Long duration, int epicId) {
+        super(title, description, status, start, duration);
+        this.epicId = epicId;
     }
 
-    public Subtask(String title, String description, int id, Status status, int epicid) {
+    public Subtask(String title, String description, int id, Status status, int epicId) {
         super(title, description, id, status);
-        this.epicid = epicid;
+        this.epicId = epicId;
     }
 
-    public int getEpicid() {
-        return epicid;
+    public int getEpicId() {
+        return epicId;
     }
 
-    public void setEpicid(int epicid) {
-        this.epicid = epicid;
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
     }
 
     @Override
@@ -51,6 +51,9 @@ public class Subtask extends Task {
                 .append("; Описание: ").append(getDescription())
                 .append("; id: ").append(getId())
                 .append("; Статус: ").append(getStatus())
+                .append("; Начало: ").append(getStartTime())
+                .append("; Продолжительность (минут): ").append(getDuration())
+                .append("; Конец: ").append(getEndTime())
                 .append(")").append("\n").toString();
     }
 }
