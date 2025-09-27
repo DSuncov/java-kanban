@@ -140,10 +140,10 @@ public class TaskEpicSubtaskTest {
     @Test
     public void should_Return_Correct_Duration_of_Epic_Test() {
         long actualDuration1 = taskManager.getEpic(1).getDuration();
-        long expectedDuration1 = 145;
+        long expectedDuration1 = 60;
 
         long actualDuration2 = taskManager.getEpic(2).getDuration();
-        long expectedDuration2 = 130;
+        long expectedDuration2 = 65;
 
         long actualDuration3 = taskManager.getEpic(3).getDuration();
         long expectedDuration3 = 0;

@@ -17,6 +17,8 @@ public class Epic extends Task {
 
     public Epic(String title, String description, Status status) {
         super(title, description, status);
+        startTime = getDefaultDateTime();
+        endTime = getDefaultDateTime();
     }
 
     public List<Integer> getSubtasksId() {
@@ -32,19 +34,20 @@ public class Epic extends Task {
     }
 
     public void setDuration(Subtask subtask) {
-        long durationMinutes = subtask.getDuration();
+        long durationSubtask = subtask.getDuration();
 
-        if (durationMinutes == 0) {
+        if (durationSubtask == 0) {
             duration = Duration.ZERO;
             return;
         }
 
         if (duration == null) {
-            duration = Duration.ofMinutes(durationMinutes);
+            duration = Duration.ofMinutes(durationSubtask);
             return;
         }
 
-        duration = Duration.between(startTime, endTime);
+        long current = getDuration() + durationSubtask;
+        duration = Duration.ofMinutes(current);
     }
 
     public long getDuration() {
@@ -64,7 +67,7 @@ public class Epic extends Task {
     public void setStartTime(Subtask subtask) {
         LocalDateTime localDateTimeSubtask = subtask.getStartTime();
 
-        if (startTime == null) {
+        if (startTime == getDefaultDateTime()) {
             startTime = localDateTimeSubtask;
         }
 
@@ -75,16 +78,11 @@ public class Epic extends Task {
     }
 
     public LocalDateTime getEndTime() {
-        if (startTime == null) {
-            return getDefaultDateTime();
-        }
-        return startTime.plus(duration);
+        return endTime;
     }
 
     public LocalDateTime getEndTime(Subtask subtask) {
-        if (startTime == null) {
-            endTime = Task.getDefaultDateTime();
-        } else if (subtask.getDuration() == 0) {
+        if (subtask.getDuration() == 0) {
             endTime = startTime;
         } else {
             endTime = startTime.plus(Duration.ofMinutes(subtask.getDuration()));
