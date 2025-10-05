@@ -1,6 +1,6 @@
 package api;
 
-import Handler.*;
+import handler.*;
 import adapters.DurationAdapter;
 import adapters.LocalDateTimeAdapter;
 import com.google.gson.Gson;
