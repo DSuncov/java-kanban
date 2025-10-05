@@ -5,10 +5,10 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import exception.NotFoundException;
 import manager.TaskManager;
-import tasks.Status;
 import tasks.Subtask;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class SubtasksHandler extends BaseHandler implements HttpHandler {
 
@@ -36,11 +36,9 @@ public class SubtasksHandler extends BaseHandler implements HttpHandler {
                         System.out.println("Получили подзадачу по id: " + id);
                     }
                     case "POST" -> {
-                        System.out.println("Введите данные для обновления.");
-                        String newTitle = scanner.nextLine();
-                        String newDescription = scanner.nextLine();
-                        Status newStatus = Status.valueOf(scanner.nextLine());
-                        manager.updateSubtask(idEpic, id, newTitle, newDescription, newStatus);
+                        String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+                        Subtask subtask = gson.fromJson(body, Subtask.class);
+                        manager.updateSubtask(subtask.getEpicId(), subtask.getId(), subtask.getTitle(), subtask.getDescription(), subtask.getStatus());
                         sendModify(exchange);
                     }
                     case "DELETE" -> {
@@ -58,11 +56,9 @@ public class SubtasksHandler extends BaseHandler implements HttpHandler {
                         System.out.println("Получили подзадачу по id: " + id + "и id его эпика: " + idEpic);
                     }
                     case "POST" -> {
-                        System.out.println("Введите данные для обновления.");
-                        String newTitle = scanner.nextLine();
-                        String newDescription = scanner.nextLine();
-                        Status newStatus = Status.valueOf(scanner.nextLine());
-                        manager.updateSubtask(idEpic, id, newTitle, newDescription, newStatus);
+                        String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+                        Subtask subtask = gson.fromJson(body, Subtask.class);
+                        manager.updateSubtask(subtask.getEpicId(), subtask.getId(), subtask.getTitle(), subtask.getDescription(), subtask.getStatus());
                         sendModify(exchange);
                     }
                     case "DELETE" -> {
@@ -80,13 +76,8 @@ public class SubtasksHandler extends BaseHandler implements HttpHandler {
                         System.out.println("Получили список подзадач.");
                     }
                     case "POST" -> {
-                        System.out.println("Введите данные для добавления.");
-                        String title = scanner.nextLine();
-                        String description = scanner.nextLine();
-                        Status status = Status.valueOf(scanner.nextLine());
-                        String start = scanner.nextLine();
-                        Long duration = 60L;
-                        Subtask subtask = new Subtask(title, description, status, start,duration);
+                        String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+                        Subtask subtask = gson.fromJson(body, Subtask.class);
                         manager.createSubtask(manager.getEpic(idEpic), subtask);
                         if (!manager.getAllSubtask().contains(subtask)) {
                             System.out.println("Подзадача не добавлена.");

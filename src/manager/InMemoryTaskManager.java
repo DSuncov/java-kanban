@@ -7,6 +7,8 @@ import tasks.Subtask;
 import tasks.Task;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class InMemoryTaskManager implements TaskManager {
     private int taskIdCounter; //id для простых задач и эпиков
@@ -152,14 +154,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask getSubtaskById(int id) {
-        Subtask subtask = null;
-        for (Map<Integer, Subtask> map: subtasks.values()) {
-            if (!map.containsKey(id)) {
-                throw new NotFoundException("Подзадачи с таким id не существует.");
-            } else {
-                subtask = map.get(id);
-            }
+        Subtask subtask;
+
+        Optional<Subtask> optionalSubtask = subtasks.values().stream()
+                .filter(map -> map.containsKey(id))
+                .map(map -> map.get(id))
+                .findFirst();
+
+        if (optionalSubtask.isPresent()) {
+            subtask = optionalSubtask.get();
+        } else {
+            throw new NotFoundException("Подзадачи с таким id не существует.");
         }
+
         historyManager.add(subtask);
         return subtask;
     }

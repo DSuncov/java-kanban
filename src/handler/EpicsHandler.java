@@ -6,9 +6,9 @@ import com.sun.net.httpserver.HttpHandler;
 import exception.NotFoundException;
 import manager.TaskManager;
 import tasks.Epic;
-import tasks.Status;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class EpicsHandler extends BaseHandler implements HttpHandler {
 
@@ -31,7 +31,7 @@ public class EpicsHandler extends BaseHandler implements HttpHandler {
             if (id > 0) { // для URL /epics/{id}
                 switch (exchange.getRequestMethod()) {
                     case "GET" -> {
-                        if ("subtasks".equals(split[uriSecondElement])) { // для URL /epics/{id}/subtasks
+                        if (split.length == 4 && "subtasks".equals(split[uriThirdElement])) { // для URL /epics/{id}/subtasks
                             sendText(exchange, gson.toJson(manager.getSubtaskByEpic(manager.getEpic(id))));
                             System.out.println("Получили список подзадач по id эпика: " + id);
                         } else {
@@ -40,10 +40,9 @@ public class EpicsHandler extends BaseHandler implements HttpHandler {
                         }
                     }
                     case "POST" -> {
-                        System.out.println("Введите данные для обновления.");
-                        String newTitle = scanner.nextLine();
-                        String newDescription = scanner.nextLine();
-                        manager.updateEpic(id, newTitle, newDescription);
+                        String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+                        Epic epic = gson.fromJson(body, Epic.class);
+                        manager.updateEpic(epic.getId(), epic.getTitle(), epic.getDescription());
                         sendModify(exchange);
                     }
                     case "DELETE" -> {
@@ -59,11 +58,8 @@ public class EpicsHandler extends BaseHandler implements HttpHandler {
                         System.out.println("Получили список эпиков.");
                     }
                     case "POST" -> {
-                        System.out.println("Введите данные для добавления.");
-                        String title = scanner.nextLine();
-                        String description = scanner.nextLine();
-                        Status status = Status.valueOf(scanner.nextLine());
-                        Epic epic = new Epic(title, description, status);
+                        String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+                        Epic epic = gson.fromJson(body, Epic.class);
                         manager.createEpic(epic);
                         if (!manager.getAllEpic().contains(epic)) {
                             System.out.println("Эпик не добавлен.");

@@ -5,10 +5,10 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import exception.NotFoundException;
 import manager.TaskManager;
-import tasks.Status;
 import tasks.Task;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class TasksHandler extends BaseHandler implements HttpHandler {
 
@@ -35,11 +35,9 @@ public class TasksHandler extends BaseHandler implements HttpHandler {
                         System.out.println("Получили задачу по id: " + id);
                     }
                     case "POST" -> {
-                        System.out.println("Введите данные для обновления.");
-                        String newTitle = scanner.nextLine();
-                        String newDescription = scanner.nextLine();
-                        Status newStatus = Status.valueOf(scanner.nextLine());
-                        manager.updateTask(id, newTitle, newDescription, newStatus);
+                        String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+                        Task task = gson.fromJson(body, Task.class);
+                        manager.updateTask(task.getId(), task.getTitle(), task.getDescription(), task.getStatus());
                         sendModify(exchange);
                     }
                     case "DELETE" -> {
@@ -55,13 +53,8 @@ public class TasksHandler extends BaseHandler implements HttpHandler {
                         System.out.println("Получили список задач.");
                     }
                     case "POST" -> {
-                        System.out.println("Введите данные для добавления.");
-                        String title = scanner.nextLine();
-                        String description = scanner.nextLine();
-                        Status status = Status.valueOf(scanner.nextLine());
-                        String start = scanner.nextLine();
-                        Long duration = 60L;
-                        Task task = new Task(title, description, status, start, duration);
+                        String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+                        Task task = gson.fromJson(body, Task.class);
                         manager.createTask(task);
                         if (!manager.getAllTask().contains(task)) {
                             System.out.println("Задача не добавлена.");

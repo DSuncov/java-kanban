@@ -139,9 +139,7 @@ public class Main {
                 System.out.println("--> " + task);
             }
         }
-
         System.out.println("История:");
         manager.getHistoryManager().getHistory().forEach(System.out::println);
-
     }
 }

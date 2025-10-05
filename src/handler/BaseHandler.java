@@ -7,7 +7,6 @@ import manager.TaskManager;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 
 public class BaseHandler {
 
@@ -18,7 +17,6 @@ public class BaseHandler {
 
     private final TaskManager manager;
     private final Gson gson;
-    protected final Scanner scanner = new Scanner(System.in);
 
     public BaseHandler(TaskManager manager, Gson gson) {
         this.manager = manager;
@@ -64,6 +62,14 @@ public class BaseHandler {
         int id = 0;
 
         if (split.length == 3) {
+            try {
+                id = Integer.parseInt(split[uriSecondElement]);
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException("В качестве id передано не целое число.");
+            }
+        }
+
+        if (split.length == 4) {
             try {
                 id = Integer.parseInt(split[uriSecondElement]);
             } catch (NumberFormatException e) {
