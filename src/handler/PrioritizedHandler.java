@@ -21,7 +21,7 @@ public class PrioritizedHandler extends BaseHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        String typeHandler = requestMapping(exchange)[URI_FIRST_ELEMENT];
+        String typeHandler = requestMapping(exchange)[uriFirstElement];
         try {
             switch (exchange.getRequestMethod()) {
                 case "GET" -> {

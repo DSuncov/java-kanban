@@ -11,10 +11,10 @@ import java.util.Scanner;
 
 public class BaseHandler {
 
-    protected final int URI_FIRST_ELEMENT = 1; //Базовый путь
-    protected final int URI_SECOND_ELEMENT = 2; //id задачи, эпика или подзадачи
-    protected final int URI_THIRD_ELEMENT = 3; //Тип второй задачи
-    protected final int URI_FOURTH_ELEMENT = 4; //id эпика для методов подзадач: /subtasks/{id}/epics/{id}
+    protected final int uriFirstElement = 1; //Базовый путь
+    protected final int uriSecondElement = 2; //id задачи, эпика или подзадачи
+    protected final int uriThirdElement = 3; //Тип второй задачи
+    protected final int uriFourthElement = 4; //id эпика для методов подзадач: /subtasks/{id}/epics/{id}
 
     private final TaskManager manager;
     private final Gson gson;
@@ -65,7 +65,7 @@ public class BaseHandler {
 
         if (split.length == 3) {
             try {
-                id = Integer.parseInt(split[URI_SECOND_ELEMENT]);
+                id = Integer.parseInt(split[uriSecondElement]);
             } catch (NumberFormatException e) {
                 throw new NumberFormatException("В качестве id передано не целое число.");
             }
@@ -73,7 +73,7 @@ public class BaseHandler {
 
         if (split.length == 5) {
             try {
-                id = Integer.parseInt(split[URI_SECOND_ELEMENT]);
+                id = Integer.parseInt(split[uriSecondElement]);
             } catch (NumberFormatException e) {
                 throw new NumberFormatException("В качестве id передано не целое число.");
             }
@@ -86,7 +86,7 @@ public class BaseHandler {
 
         if (split.length == 5) {
             try {
-                idEpic = Integer.parseInt(split[URI_FOURTH_ELEMENT]);
+                idEpic = Integer.parseInt(split[uriFourthElement]);
             } catch (NumberFormatException e) {
                 throw new NumberFormatException("В качестве id передано не целое число.");
             }

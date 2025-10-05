@@ -24,14 +24,14 @@ public class EpicsHandler extends BaseHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String[] split = requestMapping(exchange);
-        String typeHandler = split[URI_FIRST_ELEMENT];
+        String typeHandler = split[uriFirstElement];
         int id = getId(split);
 
         try {
             if (id > 0) { // для URL /epics/{id}
                 switch (exchange.getRequestMethod()) {
                     case "GET" -> {
-                        if ("subtasks".equals(split[URI_SECOND_ELEMENT])) { // для URL /epics/{id}/subtasks
+                        if ("subtasks".equals(split[uriSecondElement])) { // для URL /epics/{id}/subtasks
                             sendText(exchange, gson.toJson(manager.getSubtaskByEpic(manager.getEpic(id))));
                             System.out.println("Получили список подзадач по id эпика: " + id);
                         } else {

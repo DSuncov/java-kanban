@@ -24,7 +24,7 @@ public class SubtasksHandler extends BaseHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String[] split = requestMapping(exchange);
-        String typeHandler = split[URI_FIRST_ELEMENT];
+        String typeHandler = split[uriFirstElement];
         int id = getId(split);
         int idEpic = getIdEpic(split);
 
