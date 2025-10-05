@@ -12,8 +12,8 @@ public class Task {
     private String title;
     private Status status;
     private String description;
-    private Duration duration;
-    private LocalDateTime startTime;
+    protected Duration duration;
+    protected LocalDateTime startTime;
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static LocalDateTime defaultDateTime = LocalDateTime.parse("1970-01-01 00:00", formatter);
 

@@ -1,5 +1,6 @@
 package manager;
 
+import exception.NotFoundException;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
@@ -55,7 +56,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getAllTask() {
         if (commonTasks.isEmpty()) {
-            throw new NullPointerException("Коллекция пуста. Невозможно получить список задач.");
+            throw new NotFoundException("Коллекция пуста. Невозможно получить список задач.");
         }
         return new ArrayList<>(commonTasks.values());
     }
@@ -63,15 +64,29 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Epic> getAllEpic() {
         if (epics.isEmpty()) {
-            throw new NullPointerException("Коллекция пуста. Невозможно получить список эпиков.");
+            throw new NotFoundException("Коллекция пуста. Невозможно получить список эпиков.");
         }
         return new ArrayList<>(epics.values());
     }
 
     @Override
+    public List<Subtask> getAllSubtask() {
+        if (subtasks.isEmpty()) {
+            throw new NotFoundException("Коллекция пуста. Невозможно получить список подзадач.");
+        }
+
+        List<Subtask> allSubtasks = new ArrayList<>();
+        for (Map<Integer, Subtask> map: subtasks.values()) {
+            allSubtasks.addAll(map.values());
+        }
+
+        return allSubtasks;
+    }
+
+    @Override
     public List<Subtask> getSubtaskByEpic(Epic epic) {
         if (subtasks.isEmpty()) {
-            throw new NullPointerException("Коллекция пуста. Невозможно получить список подзадач.");
+            throw new NotFoundException("Коллекция пуста. Невозможно получить список подзадач.");
         }
         return new ArrayList<>(subtasks.get(epic).values());
     }
@@ -108,7 +123,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTask(int id) {
         if (!commonTasks.containsKey(id)) {
-            throw new NullPointerException("Обычной задачи с таким id не существует.");
+            throw new NotFoundException("Задачи с таким id не существует.");
         }
         Task task = commonTasks.get(id);
         historyManager.add(task);
@@ -118,7 +133,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpic(int id) {
         if (!epics.containsKey(id)) {
-            throw new NullPointerException("Эпика с таким id не существует.");
+            throw new NotFoundException("Эпика с таким id не существует.");
         }
         Epic epic = epics.get(id);
         historyManager.add(epic);
@@ -128,9 +143,23 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask getSubtask(Epic epic, int id) {
         if (!subtasks.get(epic).containsKey(id)) {
-            throw new NullPointerException("Подзадачи с таким id не существует.");
+            throw new NotFoundException("Подзадачи с таким id не существует.");
         }
         Subtask subtask = subtasks.get(epic).get(id);
+        historyManager.add(subtask);
+        return subtask;
+    }
+
+    @Override
+    public Subtask getSubtaskById(int id) {
+        Subtask subtask = null;
+        for (Map<Integer, Subtask> map: subtasks.values()) {
+            if (!map.containsKey(id)) {
+                throw new NotFoundException("Подзадачи с таким id не существует.");
+            } else {
+                subtask = map.get(id);
+            }
+        }
         historyManager.add(subtask);
         return subtask;
     }
@@ -240,7 +269,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeTask(int id) {
         if (!commonTasks.containsKey(id)) {
-            System.out.print("Обычной задачи с таким id не существует!");
+            System.out.print("Задачи с таким id не существует!");
             return;
         }
         Task task = commonTasks.get(id);
@@ -283,6 +312,24 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.get(epic).remove(id);
         tasksSortedByStartTime.remove(subtask);
         System.out.println("Задача успешно удалена!");
+    }
+
+    @Override
+    public void removeSubtask(int id) {
+        Subtask subtask;
+
+        for (Map<Integer, Subtask> map : subtasks.values()) {
+            if (!map.containsKey(id)) {
+                System.out.print("Подзадачи с таким id не существует!");
+                return;
+            } else {
+                subtask = map.get(id);
+                historyManager.remove(id);
+                subtasks.get(epics.get(subtask.getEpicId())).remove(id);
+                tasksSortedByStartTime.remove(subtask);
+                System.out.println("Задача успешно удалена!");
+            }
+        }
     }
 
     //Обновление задачи

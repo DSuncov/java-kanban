@@ -1,3 +1,4 @@
+import api.HttpTaskServer;
 import manager.Managers;
 import manager.TaskManager;
 import tasks.Epic;
@@ -5,9 +6,11 @@ import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 
+import java.io.IOException;
+
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         TaskManager taskManager = Managers.getDefault();
 
         // Создание и добавление простых задач
@@ -46,6 +49,7 @@ public class Main {
         taskManager.createSubtask(epic2, subtask6);
 
         printAllTasks(taskManager);
+
         System.out.print("-".repeat(100) + "\n");
         taskManager.getPrioritizedTasks().stream().forEach(System.out::println);
 
@@ -106,6 +110,8 @@ public class Main {
 //        taskManager.removeAllSubtask();
 //        System.out.println("-".repeat(100));
 
+        HttpTaskServer httpTaskServer = new HttpTaskServer(taskManager);
+        httpTaskServer.start();
     }
 
     private static void printAllTasks(TaskManager manager) {
@@ -136,5 +142,6 @@ public class Main {
 
         System.out.println("История:");
         manager.getHistoryManager().getHistory().forEach(System.out::println);
+
     }
 }

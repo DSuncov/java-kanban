@@ -9,8 +9,7 @@ import java.util.Objects;
 
 public class Epic extends Task {
 
-    private Duration duration;
-    private LocalDateTime startTime;
+//    private Duration duration;
     private LocalDateTime endTime;
 
     public List<Integer> subtasksId = new ArrayList<>(); // поле для хранения id подзадач

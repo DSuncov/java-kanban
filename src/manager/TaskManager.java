@@ -24,6 +24,8 @@ public interface TaskManager {
 
     List<Epic> getAllEpic();
 
+    List<Subtask> getAllSubtask();
+
     List<Subtask> getSubtaskByEpic(Epic epic);
 
     //Удаление всех задач из коллекции
@@ -40,6 +42,8 @@ public interface TaskManager {
 
     Subtask getSubtask(Epic epic, int id);
 
+    Subtask getSubtaskById(int id);
+
     //Добавление задачи в коллекцию
     void createTask(Task task);
 
@@ -53,6 +57,8 @@ public interface TaskManager {
     void removeEpic(int id);
 
     void removeSubtask(Epic epic, int id);
+
+    void removeSubtask(int id);
 
     //Обновление задачи
     void updateTask(int id, String title, String description, Status status);

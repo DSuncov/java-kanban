@@ -17,7 +17,7 @@ public class InMemoryHistoryManagerTest {
     static HistoryManager historyManager = Managers.getDefaultHistory();
     static TaskManager taskManager = Managers.getDefault();
 
-    List<Task> expected = new ArrayList<>();
+    static List<Task> expected = new ArrayList<>();
     static Task task1 = new Task(TASK_TITLE[0], TASK_DESCRIPTION[0], DEFAULT_STATUS, TASKDATETIME[0], TASKDURATION[0]);
     static Task task2 = new Task(TASK_TITLE[1], TASK_DESCRIPTION[1], DEFAULT_STATUS, TASKDATETIME[1], TASKDURATION[1]);
     static Task task3 = new Task(TASK_TITLE[2], TASK_DESCRIPTION[2], DEFAULT_STATUS, TASKDATETIME[2], TASKDURATION[2]);
